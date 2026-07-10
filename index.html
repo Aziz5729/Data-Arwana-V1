@@ -151,6 +151,7 @@
             { id: 'tollbensin', name: 'Struk Toll & Bensin', icon: 'fa-gas-pump', role: 'all' },
             { id: 'maintenance', name: 'Maintenance Kendaraan', icon: 'fa-wrench', role: 'all' }, 
             { id: 'faktur_pajak', name: 'Faktur Pajak Kendaraan', icon: 'fa-file-invoice-dollar', role: 'all' },
+            { id: 'simulasi_opm', name: 'Simulasi Nilai OPM', icon: 'fa-calculator', role: 'all' }
             { id: 'laporan', name: 'Laporan Akhir (Download Excel)', icon: 'fa-file-excel', role: 'admin' } 
         ];
 
@@ -287,6 +288,23 @@
             }
 
             bukaKontenHalaman(menuId);
+        }
+
+        function hitungSimulasi() {
+            // Ambil nilai input
+            const kalibrasi = parseFloat(document.getElementById('sim-kalibrasi').value) || 0;
+            const jumlahConn = parseInt(document.getElementById('sim-conn').value) || 0;
+            const jumlahSplice = parseInt(document.getElementById('sim-splice').value) || 0;
+
+            // Logika perhitungan
+            const totalConn = jumlahConn * 0.35;
+            const totalSplice = jumlahSplice * 0.1;
+            
+            // Hasil penjumlahan semua komponen
+            const total = kalibrasi + totalConn + totalSplice;
+
+            // Tampilkan hasil
+            document.getElementById('hasil-opm').innerText = total.toFixed(2);
         }
 
         function refreshMenuAktif() {
@@ -801,6 +819,38 @@
                 `;
                 document.getElementById('form-faktur-pajak').addEventListener('submit', simpanFakturPajakKendaraan);
                 muatTabelFakturPajak();
+            }
+
+            else if (menuId === 'simulasi_opm') {
+                page.innerHTML = `
+                    <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm max-w-lg mx-auto">
+                        <h3 class="font-bold text-sm uppercase text-slate-900 mb-4">Simulasi Nilai OPM</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 uppercase">Redaman (1310/1550)</label>
+                                <div class="flex gap-2 mt-1">
+                                    <div class="flex-1 bg-slate-100 p-2 rounded text-center text-xs font-bold text-slate-600">1310: 0,35</div>
+                                    <div class="flex-1 bg-slate-100 p-2 rounded text-center text-xs font-bold text-slate-600">1550: 0,23</div>
+                                </div>
+                            </div>
+                            <div><label class="block text-[10px] font-semibold text-slate-500 uppercase">Kalibrasi (Input Manual)</label>
+                            <input type="number" id="sim-kalibrasi" step="0.01" class="w-full px-3 py-2 border rounded-xl bg-slate-50 text-xs mt-1" value="0"></div>
+                            
+                            <div><label class="block text-[10px] font-semibold text-slate-500 uppercase">Jumlah Connector (x 0,35)</label>
+                            <input type="number" id="sim-conn" class="w-full px-3 py-2 border rounded-xl bg-slate-50 text-xs mt-1" value="0"></div>
+                            
+                            <div><label class="block text-[10px] font-semibold text-slate-500 uppercase">Jumlah Splice (x 0,1)</label>
+                            <input type="number" id="sim-splice" class="w-full px-3 py-2 border rounded-xl bg-slate-50 text-xs mt-1" value="0"></div>
+                            
+                            <button onclick="hitungSimulasi()" class="w-full bg-blue-600 text-white py-2.5 rounded-xl font-bold text-xs mt-2">Hitung Total</button>
+                            
+                            <div class="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                                <p class="text-[10px] text-blue-600 font-bold uppercase">Hasil Estimasi OPM</p>
+                                <h2 id="hasil-opm" class="text-2xl font-black text-blue-900">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
 
             else if (menuId === 'laporan') {
