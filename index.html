@@ -151,6 +151,7 @@
             { id: 'tollbensin', name: 'Struk Toll & Bensin', icon: 'fa-gas-pump', role: 'all' },
             { id: 'maintenance', name: 'Maintenance Kendaraan', icon: 'fa-wrench', role: 'all' }, 
             { id: 'faktur_pajak', name: 'Faktur Pajak Kendaraan', icon: 'fa-file-invoice-dollar', role: 'all' },
+            { id: 'simulasi_opm', name: 'Simulasi Nilai OPM', icon: 'fa-calculator', role: 'all' },
             { id: 'laporan', name: 'Laporan Akhir (Download Excel)', icon: 'fa-file-excel', role: 'admin' } 
         ];
 
@@ -803,6 +804,36 @@
                 muatTabelFakturPajak();
             }
 
+            else if (menuId === 'simulasi_opm') {
+                page.innerHTML = `
+                    <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm max-w-lg mx-auto">
+                        <h3 class="font-bold text-slate-900 text-sm mb-4">Simulasi Perhitungan OPM</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 uppercase">Redaman Kabel</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="p-2 bg-slate-50 rounded text-xs">1310 nm: <b>0,35 dB/km</b></div>
+                                    <div class="p-2 bg-slate-50 rounded text-xs">1550 nm: <b>0,23 dB/km</b></div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 uppercase">Input Data</label>
+                                <input type="number" id="sim-dist" placeholder="Jarak Kabel (km)" class="w-full px-3 py-2 border rounded-lg text-xs mb-2">
+                                <input type="number" id="sim-kal" placeholder="Nilai Kalibrasi (dB)" class="w-full px-3 py-2 border rounded-lg text-xs mb-2">
+                                <input type="number" id="sim-conn" placeholder="Jumlah Connector" class="w-full px-3 py-2 border rounded-lg text-xs mb-2">
+                                <input type="number" id="sim-splice" placeholder="Jumlah Splice" class="w-full px-3 py-2 border rounded-lg text-xs mb-2">
+                                <select id="sim-tipe" class="w-full px-3 py-2 border rounded-lg text-xs">
+                                    <option value="1310">Tipe Kabel 1310</option>
+                                    <option value="1550">Tipe Kabel 1550</option>
+                                </select>
+                            </div>
+                            <button onclick="hitungSimulasiOPM()" class="w-full bg-blue-600 text-white py-2 rounded-lg text-xs font-bold">Hitung Total Redaman</button>
+                            <div id="sim-hasil" class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-lg text-xs font-bold hidden"></div>
+                        </div>
+                    </div>
+                `;
+            }
+                
             else if (menuId === 'laporan') {
                 page.innerHTML = `
                     <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-100 shadow-sm">
@@ -825,6 +856,21 @@
                 muatLaporanMatriksFinansial();
             }
         }
+
+        function hitungSimulasiOPM() {
+    const jarak = parseFloat(document.getElementById('sim-dist').value) || 0;
+    const kalibrasi = parseFloat(document.getElementById('sim-kal').value) || 0;
+    const conn = parseFloat(document.getElementById('sim-conn').value) || 0;
+    const splice = parseFloat(document.getElementById('sim-splice').value) || 0;
+    const tipe = document.getElementById('sim-tipe').value;
+
+    const redamanKabel = tipe === '1310' ? 0.35 : 0.23;
+    const total = (jarak * redamanKabel) + kalibrasi + (conn * 0.35) + (splice * 0.1);
+
+    const hasilDiv = document.getElementById('sim-hasil');
+    hasilDiv.classList.remove('hidden');
+    hasilDiv.innerText = `Total Nilai OPM: ${total.toFixed(2)} dB`;
+}
 
         // ==================== ENGINE EDIT & HAPUS LOGIC (KHUSUS ADMIN) ====================
 
