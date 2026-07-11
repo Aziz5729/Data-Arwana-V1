@@ -130,6 +130,31 @@
         </div>
     </div>
 
+            // Cek apakah URL mengandung hash recovery
+        if (window.location.hash.includes('type=recovery')) {
+            // Sembunyikan form login (jika ada) dan tampilkan form ganti password
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('reset-password-form').style.display = 'block';
+        } else {
+            // Jika tidak ada token, biarkan login seperti biasa
+        }
+        
+        // Fungsi untuk mengganti password
+        async function handlePasswordUpdate() {
+            const newPassword = document.getElementById('new-password').value;
+            
+            const { data, error } = await supabase.auth.updateUser({
+                password: newPassword
+            });
+        
+            if (error) {
+                alert("Gagal: " + error.message);
+            } else {
+                alert("Password berhasil diperbarui! Silakan login kembali.");
+                window.location.href = '/login.html';
+            }
+        }
+    
     <script>
         const SUPABASE_URL = "https://uczqzarbuunjrkefdsdj.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_3jk79pXdGHa88negFx1TGw_z2JnHnrO"; 
