@@ -154,6 +154,21 @@
                 window.location.href = '/login.html';
             }
         }
+
+        async function simpanPasswordBaru() {
+    const passwordBaru = document.getElementById('input-password-baru').value;
+    
+    const { data, error } = await supabase.auth.updateUser({
+        password: passwordBaru
+    });
+
+    if (error) {
+        alert("Gagal memperbarui password: " + error.message);
+    } else {
+        alert("Password berhasil diubah! Silakan login.");
+        window.location.href = '/'; // Kembali ke halaman utama
+    }
+}
     
     <script>
         const SUPABASE_URL = "https://uczqzarbuunjrkefdsdj.supabase.co"; 
@@ -225,13 +240,34 @@
             });
         }
 
-        async function periksaSesiLogin() {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session?.user) ambilProfilDanMasuk(session.user);
-            } catch(e) { console.error("Session check error", e); }
-        }
+                   async function periksaSesiLogin() {
+                try {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    
+                    // CEK: Apakah ini link reset password?
+                    const isRecovery = window.location.hash.includes('type=recovery');
+            
+                    if (session?.user) {
+                        // Jika ada sesi dan BUKAN sedang reset password, masuk ke aplikasi
+                        if (!isRecovery) {
+                            ambilProfilDanMasuk(session.user);
+                        }
+                    }
+                } catch(e) { console.error("Session check error", e); }
+            }
 
+                    // Listener untuk menangani proses setelah klik link email
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (event === 'PASSWORD_RECOVERY') {
+                    // Sembunyikan halaman login/auth
+                    document.getElementById('auth-page').classList.add('hidden');
+                    
+                    // Tampilkan form input password baru (Anda harus membuat elemen ini di HTML)
+                    // Contoh: document.getElementById('form-ganti-password').classList.remove('hidden');
+                    alert("Silakan masukkan password baru Anda.");
+                }
+            });
+        
         async function prosesAutentikasi(e) {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
