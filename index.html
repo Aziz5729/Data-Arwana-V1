@@ -24,7 +24,6 @@
 </head>
 <body class="text-slate-800 antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- Halaman Utama Login / Daftar -->
     <div id="auth-page" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100 fade-in">
             <div class="text-center mb-6">
@@ -53,7 +52,7 @@
             
             <div class="text-center mt-6 text-xs text-slate-600 space-y-2">
                 <button id="toggle-auth" type="button" class="text-blue-600 font-semibold hover:underline">Belum punya akun? Daftar disini</button>
-                <br>
+		<br>
                 <button id="toggle-forgot-password" type="button" class="text-amber-600 font-semibold hover:underline">Lupa Password?</button>
             </div>
         </div>
@@ -309,7 +308,7 @@
                 document.getElementById('auth-nama').required = isRegisterMode;
                 document.getElementById('toggle-auth').innerText = isRegisterMode ? "Sudah punya akun? Login" : "Belum punya akun? Daftar disini";
             });
-            
+
             // Event Lupa Password
             document.getElementById('toggle-forgot-password').addEventListener('click', () => {
                 document.getElementById('auth-page').classList.add('hidden');
@@ -467,9 +466,6 @@
             }
         }
 
-        // ======================================
-        // SISA KODE FUNGSI TETAP SAMA SEBELUMNYA
-        // ======================================
         function bukaKontenHalaman(menuId) {
             const container = document.getElementById('content-area');
             if (!container) return;
@@ -655,14 +651,14 @@
                             <form id="form-pencatatan-kasbon" class="space-y-3">
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Pilih Anggota</label><select id="bon-user-id" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></select></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal</label><input type="date" id="bon-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nominal Pinjaman (Rp)</label><input type="number" id="bon-nominal" required min="1000" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan / Tujuan</label><input type="text" id="bon-keterangan" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Contoh: Biaya darurat"></div>
-                                <button type="submit" class="w-full bg-amber-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-amber-700 transition active:scale-95">Simpan Data Kasbon</button>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nominal (Rp)</label><input type="number" id="bon-jumlah" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan</label><input type="text" id="bon-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Kasbon lapangan"></div>
+                                <button type="submit" class="w-full bg-red-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-red-700 transition active:scale-95">Simpan Log Kasbon</button>
                             </form>
                         </div>
                         <div class="lg:col-span-2 bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm">
                             <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
-                                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900">Riwayat Pinjaman</h3>
+                                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900">Riwayat Kasbon</h3>
                                 <div class="flex items-center gap-2">
                                     ${isAdmin ? `<button onclick="hapusDataTerpilih('kasbon', 'cb-kasbon')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition"><i class="fa-solid fa-trash-can"></i> Hapus Terpilih</button>` : ''}
                                     <button onclick="unduhExcelSpesifik('Kasbon', cacheKasbon)" class="bg-emerald-600 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1 active:scale-95"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
@@ -674,10 +670,7 @@
                                         <thead class="bg-slate-50 text-slate-500 uppercase font-semibold">
                                             <tr>
                                                 ${isAdmin ? '<th class="px-3 py-3 w-10 text-center"><input type="checkbox" onclick="togglePilihSemua(this, \'cb-kasbon\')"></th>' : ''}
-                                                <th class="px-3 py-3">Tanggal</th>
-                                                <th class="px-3 py-3">Nama Anggota</th>
-                                                <th class="px-3 py-3">Jumlah (Rp)</th>
-                                                <th class="px-3 py-3">Keterangan</th>
+                                                <th class="px-3 py-3">Tanggal</th><th class="px-3 py-3">Nama Anggota</th><th class="px-3 py-3">Nominal Kasbon</th><th class="px-3 py-3">Keterangan</th>
                                                 ${isAdmin ? '<th class="px-3 py-3 text-center">Aksi</th>' : ''}
                                             </tr>
                                         </thead>
@@ -688,33 +681,42 @@
                         </div>
                     </div>
                 `;
-                document.getElementById('form-pencatatan-kasbon').addEventListener('submit', simpanDataKasbon);
-                muatDataKasbon();
+                muatOpsiMemberKasbon();
+                document.getElementById('form-pencatatan-kasbon').addEventListener('submit', simpanKasbonMandiri);
+                muatHalamanKasbon();
             }
 
             else if (menuId === 'material_node_b') {
                 page.innerHTML = `
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                         <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm h-fit">
-                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900 mb-4">Input Material Node-B</h3>
-                            <form id="form-material" class="space-y-3.5">
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal</label><input type="date" id="mat-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nama Item / Material</label><input type="text" id="mat-nama" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900 mb-4">Log Transaksi Material</h3>
+                            <form id="form-material-nodeb" class="space-y-3">
                                 <div class="grid grid-cols-2 gap-3">
-                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Jumlah</label><input type="number" id="mat-jumlah" min="1" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Satuan</label><input type="text" id="mat-satuan" placeholder="Pcs / Meter / Dus" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Site ID</label><input type="text" id="mat-site-id" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal</label><input type="date" id="mat-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
                                 </div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Lokasi Penempatan</label><input type="text" id="mat-lokasi" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Foto Bukti</label><input type="file" id="mat-foto" accept="image/*" class="w-full text-xs"></div>
-                                <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Data Material</button>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nama Material</label><input type="text" id="mat-nama" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Kabel FO, RRU"></div>
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Satuan</label>
+                                    <select id="mat-satuan" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500">
+                                        <option value="PCS">PCS</option><option value="KM">KM</option><option value="SET">SET</option>
+                                    </select>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Qty Masuk</label><input type="number" id="mat-masuk" value="0" min="0" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Qty Keluar</label><input type="number" id="mat-keluar" value="0" min="0" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                </div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan</label><input type="text" id="mat-ket" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Material</button>
                             </form>
                         </div>
                         <div class="lg:col-span-2 bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm">
                             <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
-                                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900">Daftar Material Terpakai</h3>
+                                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900">Inventori Lapangan</h3>
                                 <div class="flex items-center gap-2">
-                                    ${isAdmin ? `<button onclick="hapusDataTerpilih('material_node_b', 'cb-material')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition"><i class="fa-solid fa-trash-can"></i> Hapus Terpilih</button>` : ''}
-                                    <button onclick="unduhExcelSpesifik('Material Node-B', cacheMaterialNodeB)" class="bg-emerald-600 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1 active:scale-95"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
+                                    ${isAdmin ? `<button onclick="hapusDataTerpilih('material_node_b', 'cb-mat')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition"><i class="fa-solid fa-trash-can"></i> Hapus Terpilih</button>` : ''}
+                                    <button onclick="unduhExcelSpesifik('Material_NodeB', cacheMaterialNodeB)" class="bg-emerald-600 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1 active:scale-95"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
                                 </div>
                             </div>
                             <div class="overflow-x-auto custom-scroll -mx-4 sm:mx-0">
@@ -722,261 +724,379 @@
                                     <table class="min-w-full text-left text-xs whitespace-nowrap">
                                         <thead class="bg-slate-50 text-slate-500 uppercase font-semibold">
                                             <tr>
-                                                ${isAdmin ? '<th class="px-3 py-3 w-10 text-center"><input type="checkbox" onclick="togglePilihSemua(this, \'cb-material\')"></th>' : ''}
-                                                <th class="px-3 py-3">Tanggal</th>
-                                                <th class="px-3 py-3">Nama Material</th>
-                                                <th class="px-3 py-3">Jumlah</th>
-                                                <th class="px-3 py-3">Lokasi</th>
-                                                <th class="px-3 py-3">Bukti</th>
+                                                ${isAdmin ? '<th class="px-3 py-3 w-10 text-center"><input type="checkbox" onclick="togglePilihSemua(this, \'cb-mat\')"></th>' : ''}
+                                                <th class="px-3 py-3">Site ID</th><th class="px-3 py-3">Tanggal</th><th class="px-3 py-3">Material</th>
+                                                <th class="px-3 py-3">Satuan</th><th class="px-3 py-3 text-green-600">Masuk</th><th class="px-3 py-3 text-red-600">Keluar</th>
+                                                <th class="px-3 py-3 bg-blue-50 text-blue-700">Sisa</th><th class="px-3 py-3">PIC</th><th class="px-3 py-3">Ket</th>
                                                 ${isAdmin ? '<th class="px-3 py-3 text-center">Aksi</th>' : ''}
                                             </tr>
                                         </thead>
-                                        <tbody id="tbody-material" class="divide-y divide-slate-100"></tbody>
+                                        <tbody id="tbody-material-nodeb" class="divide-y divide-slate-100"></tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
-                document.getElementById('form-material').addEventListener('submit', simpanDataMaterial);
-                muatDataMaterial();
+                document.getElementById('form-material-nodeb').addEventListener('submit', simpanMaterialMaterialNodeB);
+                muatTabelMaterialNodeB();
             }
 
-            // --- Menu Lainnya (Progres, Toll, Maintenance, dll) ---
             else if (menuId === 'progres_node_b') {
-                page.innerHTML = `<h3 class="font-bold text-slate-900">Menu Progres Node-B</h3><p class="text-xs text-slate-500 mt-2">Fitur pencatatan progres pemasangan sedang dimuat...</p>`;
+                page.innerHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                        <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm h-fit">
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900 mb-4">Update Progres Lapangan</h3>
+                            <form id="form-progres-nodeb" class="space-y-3">
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nama Site</label><input type="text" id="prog-site" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Site JKT002"></div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Mulai Progres</label><input type="date" id="prog-mulai" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Selesai Progres</label><input type="date" id="prog-selesai" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                </div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Status Progres</label><input type="text" id="prog-status" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Instalasi Rack 50%"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Tambahan</label><input type="text" id="prog-ket" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Update Progres</button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
+                                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900">Monitoring Site</h3>
+                                <div class="flex items-center gap-2">
+                                    ${isAdmin ? `<button onclick="hapusDataTerpilih('progres_node_b', 'cb-prog')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition"><i class="fa-solid fa-trash-can"></i> Hapus Terpilih</button>` : ''}
+                                    <button onclick="unduhExcelSpesifik('Progres_NodeB', cacheProgresNodeB)" class="w-full sm:w-auto bg-emerald-600 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1 active:scale-95"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto custom-scroll -mx-4 sm:mx-0">
+                                <div class="inline-block min-w-full align-middle px-4 sm:px-0">
+                                    <table class="min-w-full text-left text-xs whitespace-nowrap">
+                                        <thead class="bg-slate-50 text-slate-500 uppercase font-semibold">
+                                            <tr>
+                                                ${isAdmin ? '<th class="px-3 py-3 w-10 text-center"><input type="checkbox" onclick="togglePilihSemua(this, \'cb-prog\')"></th>' : ''}
+                                                <th class="px-3 py-3">Nama Site</th><th class="px-3 py-3">Mulai</th>
+                                                <th class="px-3 py-3">Progres</th><th class="px-3 py-3">Selesai</th>
+                                                <th class="px-3 py-3">PIC Lapangan</th><th class="px-3 py-3">Keterangan</th>
+                                                ${isAdmin ? '<th class="px-3 py-3 text-center">Aksi</th>' : ''}
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-progres-nodeb" class="divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('form-progres-nodeb').addEventListener('submit', simpanProgresNodeB);
+                muatTabelProgresNodeB();
             }
+
             else if (menuId === 'tollbensin') {
-                page.innerHTML = `<h3 class="font-bold text-slate-900">Menu Struk Toll & Bensin</h3><p class="text-xs text-slate-500 mt-2">Fitur pencatatan biaya perjalanan sedang dimuat...</p>`;
+                page.innerHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                        <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm h-fit">
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900 mb-4">Klaim Toll & Bensin</h3>
+                            <form id="form-tollbensin" class="space-y-3">
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal</label><input type="date" id="toll-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Kategori</label>
+                                    <select id="toll-kat" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500">
+                                        <option value="Bensin">Bensin / BBM</option><option value="Toll">Biaya Toll</option>
+                                    </select>
+                                </div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nominal (Rp)</label><input type="number" id="toll-nominal" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan / Site ID</label><input type="text" id="toll-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Perjalanan ke site JKT01"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Struk</label><input type="file" id="toll-foto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
+                                <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Struk</button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
+                                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900">Riwayat Perjalanan</h3>
+                                <div class="flex items-center gap-2">
+                                    ${isAdmin ? `<button onclick="hapusDataTerpilih('toll_bensin', 'cb-toll')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition"><i class="fa-solid fa-trash-can"></i> Hapus Terpilih</button>` : ''}
+                                    <button onclick="unduhExcelSpesifik('Toll_Bensin', cacheTollBensin)" class="w-full sm:w-auto bg-emerald-600 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1 active:scale-95"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto custom-scroll -mx-4 sm:mx-0">
+                                <div class="inline-block min-w-full align-middle px-4 sm:px-0">
+                                    <table class="min-w-full text-left text-xs whitespace-nowrap">
+                                        <thead class="bg-slate-50 text-slate-500 uppercase font-semibold">
+                                            <tr>
+                                                ${isAdmin ? '<th class="px-3 py-3 w-10 text-center"><input type="checkbox" onclick="togglePilihSemua(this, \'cb-toll\')"></th>' : ''}
+                                                <th class="px-3 py-3">Tanggal</th><th class="px-3 py-3">Nama Anggota</th><th class="px-3 py-3">Kategori</th><th class="px-3 py-3">Nominal</th><th class="px-3 py-3">Keterangan</th><th class="px-3 py-3 text-center">Foto</th>
+                                                ${isAdmin ? '<th class="px-3 py-3 text-center">Aksi</th>' : ''}
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-tollbensin" class="divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('form-tollbensin').addEventListener('submit', simpanTollBensin);
+                muatTabelTollBensin();
             }
+
             else if (menuId === 'maintenance') {
-                page.innerHTML = `<h3 class="font-bold text-slate-900">Menu Maintenance Kendaraan</h3><p class="text-xs text-slate-500 mt-2">Fitur pencatatan perawatan kendaraan sedang dimuat...</p>`;
+                page.innerHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                        <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm h-fit">
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900 mb-4">Maintenance Kendaraan</h3>
+                            <form id="form-maintenance" class="space-y-3">
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Jenis Kendaraan</label><input type="text" id="maint-jenis" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Avanza B 1234 XYZ"></div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal</label><input type="date" id="maint-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Kilometer (KM)</label><input type="number" id="maint-km" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="0"></div>
+                                </div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Biaya (Rp)</label><input type="number" id="maint-biaya" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="0"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Perbaikan</label><textarea id="maint-ket" required class="w-full px-3 py-2 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Ganti Oli & Kampas Rem"></textarea></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Servis</label><input type="file" id="maint-foto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
+                                <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Data</button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
+                                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900">Log Servis</h3>
+                                <div class="flex items-center gap-2">
+                                    ${isAdmin ? `<button onclick="hapusDataTerpilih('maintenance_kendaraan', 'cb-maint')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition"><i class="fa-solid fa-trash-can"></i> Hapus Terpilih</button>` : ''}
+                                    <button onclick="unduhExcelSpesifik('Maintenance', cacheMaintenance)" class="bg-emerald-600 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1 active:scale-95"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto custom-scroll -mx-4 sm:mx-0">
+                                <div class="inline-block min-w-full align-middle px-4 sm:px-0">
+                                    <table class="min-w-full text-left text-xs whitespace-nowrap">
+                                        <thead class="bg-slate-50 text-slate-500 uppercase font-semibold">
+                                            <tr>
+                                                ${isAdmin ? '<th class="px-3 py-3 w-10 text-center"><input type="checkbox" onclick="togglePilihSemua(this, \'cb-maint\')"></th>' : ''}
+                                                <th class="px-3 py-3">Tanggal</th><th class="px-3 py-3">Nama</th><th class="px-3 py-3">Kendaraan</th><th class="px-3 py-3">KM</th><th class="px-3 py-3">Biaya</th><th class="px-3 py-3">Keterangan</th><th class="px-3 py-3 text-center">Foto</th>
+                                                ${isAdmin ? '<th class="px-3 py-3 text-center">Aksi</th>' : ''}
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-maintenance" class="divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('form-maintenance').addEventListener('submit', simpanMaintenanceKendaraan);
+                muatTabelMaintenance();
             }
+
             else if (menuId === 'faktur_pajak') {
-                page.innerHTML = `<h3 class="font-bold text-slate-900">Menu Faktur Pajak Kendaraan</h3><p class="text-xs text-slate-500 mt-2">Fitur pengelolaan dokumen pajak sedang dimuat...</p>`;
+                page.innerHTML = `
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                        <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm h-fit">
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900 mb-4">Input Faktur Pajak Kendaraan</h3>
+                            <form id="form-faktur-pajak" class="space-y-3">
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nomor Faktur / No Polisi</label><input type="text" id="pajak-nomor" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Contoh: B 1234 ABC"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal Bayar</label><input type="date" id="pajak-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Total Nilai Pajak (Rp)</label><input type="number" id="pajak-biaya" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="0"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Kendaraan</label><input type="text" id="pajak-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Pajak Tahunan Mobil Avanza"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Faktur</label><input type="file" id="pajak-foto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
+                                <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Faktur Pajak</button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
+                                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900">Daftar Faktur Pajak</h3>
+                                <div class="flex items-center gap-2">
+                                    ${isAdmin ? `<button onclick="hapusDataTerpilih('faktur_pajak', 'cb-pajak')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition"><i class="fa-solid fa-trash-can"></i> Hapus Terpilih</button>` : ''}
+                                    <button onclick="unduhExcelSpesifik('FakturPajak', cacheFakturPajak)" class="w-full sm:w-auto bg-emerald-600 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1 active:scale-95"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto custom-scroll -mx-4 sm:mx-0">
+                                <div class="inline-block min-w-full align-middle px-4 sm:px-0">
+                                    <table class="min-w-full text-left text-xs whitespace-nowrap">
+                                        <thead class="bg-slate-50 text-slate-500 uppercase font-semibold">
+                                            <tr>
+                                                ${isAdmin ? '<th class="px-3 py-3 w-10 text-center"><input type="checkbox" onclick="togglePilihSemua(this, \'cb-pajak\')"></th>' : ''}
+                                                <th class="px-3 py-3">Tanggal</th><th class="px-3 py-3">PIC Pengisi</th><th class="px-3 py-3">No Faktur / Plat</th><th class="px-3 py-3">Biaya</th><th class="px-3 py-3">Keterangan</th><th class="px-3 py-3 text-center">Foto</th>
+                                                ${isAdmin ? '<th class="px-3 py-3 text-center">Aksi</th>' : ''}
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-faktur-pajak" class="divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('form-faktur-pajak').addEventListener('submit', simpanFakturPajakKendaraan);
+                muatTabelFakturPajak();
             }
+
             else if (menuId === 'simulasi_opm') {
-                page.innerHTML = `<h3 class="font-bold text-slate-900">Simulasi Nilai OPM</h3><p class="text-xs text-slate-500 mt-2">Kalkulator perhitungan nilai kontrak sedang dimuat...</p>`;
+                page.innerHTML = `
+                    <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm max-w-lg mx-auto">
+                        <h3 class="font-bold text-slate-900 text-sm mb-4">Simulasi Perhitungan OPM</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 uppercase">Redaman Kabel</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="p-2 bg-slate-50 rounded text-xs">1310 nm: <b>0,35 dB/km</b></div>
+                                    <div class="p-2 bg-slate-50 rounded text-xs">1550 nm: <b>0,23 dB/km</b></div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 uppercase">Input Data</label>
+                                <input type="number" id="sim-dist" placeholder="Jarak Kabel (km)" class="w-full px-3 py-2 border rounded-lg text-xs mb-2">
+                                <input type="number" id="sim-kal" placeholder="Nilai Kalibrasi (dB)" class="w-full px-3 py-2 border rounded-lg text-xs mb-2">
+                                <input type="number" id="sim-conn" placeholder="Jumlah Connector" class="w-full px-3 py-2 border rounded-lg text-xs mb-2">
+                                <input type="number" id="sim-splice" placeholder="Jumlah Splice" class="w-full px-3 py-2 border rounded-lg text-xs mb-2">
+                                <select id="sim-tipe" class="w-full px-3 py-2 border rounded-lg text-xs">
+                                    <option value="1310">Tipe Kabel 1310</option>
+                                    <option value="1550">Tipe Kabel 1550</option>
+                                </select>
+                            </div>
+                            <button onclick="hitungSimulasiOPM()" class="w-full bg-blue-600 text-white py-2 rounded-lg text-xs font-bold">Hitung Total Redaman</button>
+                            <div id="sim-hasil" class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-lg text-xs font-bold hidden"></div>
+                        </div>
+                    </div>
+                `;
             }
+                
             else if (menuId === 'laporan') {
-                page.innerHTML = `<h3 class="font-bold text-slate-900">Laporan Akhir</h3><p class="text-xs text-slate-500 mt-2">Unduh semua data dalam format Excel tersedia untuk Admin.</p>`;
+                page.innerHTML = `
+                    <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-100 shadow-sm">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4 mb-5">
+                            <div>
+                                <h3 class="font-black text-sm text-slate-900 uppercase tracking-wider">Matriks Finansial Akhir</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Generate otomatis matriks rekapitulasi finansial secara instan.</p>
+                            </div>
+                            <button onclick="alert('Fungsi download rekap sedang disiapkan.')" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-95">
+                                <i class="fa-solid fa-cloud-arrow-down"></i> Download Rekap Bulanan (.xlsx)
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto custom-scroll -mx-4 sm:mx-0">
+                            <div class="inline-block min-w-full align-middle px-4 sm:px-0">
+                                <table class="min-w-full text-left text-[11px] whitespace-nowrap"><thead class="bg-slate-800 text-slate-200 font-bold uppercase tracking-wider"><tr><th class="p-3">Nama Anggota</th><th class="p-3">Absen</th><th class="p-3">Salary/Hari</th><th class="p-3">Insentif</th><th class="p-3 text-emerald-400">Total Salary</th><th class="p-3">Total Pinjaman</th><th class="p-3">Kasbon Berjalan</th><th class="p-3">Cicilan</th><th class="p-3 text-amber-400">Sisa Pinjaman</th><th class="p-3 bg-blue-950 text-white text-xs">Salary Akhir</th></tr></thead><tbody id="tbody-laporan-matriks" class="divide-y divide-slate-100"></tbody></table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                muatLaporanMatriksFinansial();
             }
         }
 
-        // ======================================
-        // FUNGSI PENDUKUNG & PENYIMPANAN DATA
-        // ======================================
+        function hitungSimulasiOPM() {
+    const jarak = parseFloat(document.getElementById('sim-dist').value) || 0;
+    const kalibrasi = parseFloat(document.getElementById('sim-kal').value) || 0;
+    const conn = parseFloat(document.getElementById('sim-conn').value) || 0;
+    const splice = parseFloat(document.getElementById('sim-splice').value) || 0;
+    const tipe = document.getElementById('sim-tipe').value;
 
-        async function hitungDanMuatDashboard() {
-            // Contoh hitung ringkasan data
-            const { data: absen } = await supabase.from('absensi').select('*').eq('user_id', currentUser.id);
-            const { data: ops } = await supabase.from('operasional').select('*').eq('user_id', currentUser.id);
-            const { data: bon } = await supabase.from('kasbon').select('*').eq('user_id', currentUser.id);
+    const redamanKabel = tipe === '1310' ? 0.35 : 0.23;
+    const total = (jarak * redamanKabel) + kalibrasi + (conn * 0.35) + (splice * 0.1);
 
-            document.getElementById('dash-absen').innerText = `${absen?.length || 0} Hari`;
-            document.getElementById('dash-total-salary').innerText = `Rp ${((absen?.length || 0) * (profileData.salary_per_hari || 0)).toLocaleString('id-ID')}`;
-            
-            const saldoOps = ops?.reduce((a,b) => a + (b.tipe === 'masuk' ? b.jumlah : -b.jumlah), 0) || 0;
-            document.getElementById('dash-sisa-ops').innerText = `Rp ${saldoOps.toLocaleString('id-ID')}`;
-            
-            const totalBon = bon?.reduce((a,b) => a + b.nominal, 0) || 0;
-            document.getElementById('dash-total-kasbon').innerText = `Rp ${totalBon.toLocaleString('id-ID')}`;
-        }
+    const hasilDiv = document.getElementById('sim-hasil');
+    hasilDiv.classList.remove('hidden');
+    hasilDiv.innerText = `Total Nilai OPM: ${total.toFixed(2)} dB`;
+}
 
-        async function muatHalamanKontrolUser() {
-            const { data: users } = await supabase.from('profiles').select('*');
-            const tbody = document.getElementById('tbody-kontrol-user');
-            tbody.innerHTML = users.map(u => `
-                <tr>
-                    ${isAdmin ? `<td class="px-3 py-2 text-center"><input type="checkbox" class="cb-user" value="${u.id}"></td>` : ''}
-                    <td class="px-3 py-2">${u.nama}</td>
-                    <td class="px-3 py-2"><span class="px-2 py-1 rounded text-xs ${u.status_acc ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${u.status_acc ? 'Aktif' : 'Belum ACC'}</span></td>
-                    <td class="px-3 py-2">${u.role}</td>
-                    <td class="px-3 py-2">Rp ${(u.salary_per_hari || 0).toLocaleString('id-ID')}</td>
-                    <td class="px-3 py-2">Rp ${(u.insentif || 0).toLocaleString('id-ID')}</td>
-                    <td class="px-3 py-2">Rp ${(u.cicilan || 0).toLocaleString('id-ID')}</td>
-                    <td class="px-3 py-2">Rp ${(u.total_kasbon || 0).toLocaleString('id-ID')}</td>
-                    <td class="px-3 py-2 text-center">
-                        <button onclick="bukaModalEdit('profiles', ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="text-blue-600 hover:underline text-xs">Edit</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
+        // ==================== ENGINE EDIT & HAPUS LOGIC (KHUSUS ADMIN) ====================
 
-        function renderFormAbsen() {
-            document.getElementById('form-absensi').innerHTML = `
-                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal Kerja</label><input type="date" id="absen-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Line / Lokasi Progres</label><input type="text" id="absen-line" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Status Kehadiran</label><select id="absen-status" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option></select></div>
-                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Aktivitas Hari Ini</label><textarea id="absen-aktivitas" rows="2" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></textarea></div>
-                <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Absensi</button>
+        function cetakTombolAksiAdmin(namaTabel, idData) {
+            if (profileData?.role !== 'admin') return '';
+            return `
+                <td class="px-3 py-2 flex items-center justify-center gap-2 text-center">
+                    <button onclick="bukaModalEditUniversal('${namaTabel}', ${idData})" class="bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600 transition" title="Edit Data"><i class="fa-solid fa-pencil text-[10px]"></i></button>
+                    <button onclick="hapusDataMenu('${namaTabel}', ${idData})" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition" title="Hapus Data"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                </td>
             `;
-            document.getElementById('form-absensi').addEventListener('submit', simpanAbsensi);
         }
 
-        async function simpanAbsensi(e) {
-            e.preventDefault();
-            const data = {
-                user_id: currentUser.id,
-                nama: profileData.nama,
-                tanggal: document.getElementById('absen-tgl').value,
-                line: document.getElementById('absen-line').value,
-                status: document.getElementById('absen-status').value,
-                aktivitas: document.getElementById('absen-aktivitas').value
-            };
-            const { error } = await supabase.from('absensi').insert(data);
-            if (error) alert("Gagal simpan: " + error.message);
-            else { alert("Absensi tersimpan!"); refreshMenuAktif(); }
+        async function hapusDataMenu(namaTabel, idData) {
+            if (!confirm(`Apakah Anda yakin ingin menghapus data ini secara permanen dari tabel "${namaTabel}"?`)) return;
+            try {
+                const { error } = await supabase.from(namaTabel).delete().eq('id', idData);
+                if (error) throw error;
+                alert("Data berhasil terhapus!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal menghapus data: " + err.message); }
         }
 
-        async function muatTabelAbsen() {
-            const { data } = await supabase.from('absensi').select('*').order('tanggal', { ascending: false });
-            cacheAbsensi = data;
-            const tbody = document.getElementById('tbody-absensi');
-            tbody.innerHTML = data.map(a => `
-                <tr>
-                    ${isAdmin ? `<td class="px-3 py-2 text-center"><input type="checkbox" class="cb-absen" value="${a.id}"></td>` : ''}
-                    <td class="px-3 py-2">${a.tanggal}</td>
-                    <td class="px-3 py-2">${a.nama}</td>
-                    <td class="px-3 py-2">${a.line}</td>
-                    <td class="px-3 py-2">${a.status}</td>
-                    <td class="px-3 py-2 max-w-[150px] truncate">${a.aktivitas}</td>
-                    ${isAdmin ? `<td class="px-3 py-2 text-center"><button onclick="bukaModalEdit('absensi', ${JSON.stringify(a).replace(/"/g, '&quot;')})" class="text-blue-600 text-xs">Edit</button></td>` : ''}
-                </tr>
-            `).join('');
-        }
+        async function bukaModalEditUniversal(namaTabel, idData) {
+            try {
+                const { data, error } = await supabase.from(namaTabel).select('*').eq('id', idData).single();
+                if (error) throw error;
 
-        async function simpanOpsMasuk(e) {
-            e.preventDefault();
-            const data = {
-                user_id: currentUser.id,
-                tipe: 'masuk',
-                tanggal: document.getElementById('in-ops-tgl').value,
-                lokasi: document.getElementById('in-ops-lokasi').value,
-                jumlah: Number(document.getElementById('in-ops-jumlah').value)
-            };
-            const { error } = await supabase.from('operasional').insert(data);
-            if (error) alert("Gagal simpan: " + error.message);
-            else { alert("Kas masuk tercatat!"); refreshMenuAktif(); }
-        }
+                document.getElementById('edit-id-target').value = idData;
+                document.getElementById('edit-tabel-target').value = namaTabel;
+                document.getElementById('modal-edit-title').innerText = `Edit Data [Tabel: ${namaTabel.toUpperCase()}]`;
 
-        async function simpanOpsKeluar(e) {
-            e.preventDefault();
-            const data = {
-                user_id: currentUser.id,
-                tipe: 'keluar',
-                tanggal: document.getElementById('out-ops-tgl').value,
-                lokasi: document.getElementById('out-ops-lokasi').value,
-                deskripsi: document.getElementById('out-ops-list').value,
-                qty: Number(document.getElementById('out-ops-qty').value),
-                jumlah: Number(document.getElementById('out-ops-jumlah').value)
-            };
-            const { error } = await supabase.from('operasional').insert(data);
-            if (error) alert("Gagal simpan: " + error.message);
-            else { alert("Pengeluaran tercatat!"); refreshMenuAktif(); }
-        }
+                const fieldsContainer = document.getElementById('modal-edit-fields');
+                fieldsContainer.innerHTML = ''; 
 
-        async function muatTabelOpsDanSisa() {
-            const { data } = await supabase.from('operasional').select('*').order('tanggal', { ascending: false });
-            cacheOperasional = data;
-            const saldo = data.reduce((a,b) => a + (b.tipe === 'masuk' ? b.jumlah : -b.jumlah), 0);
-            document.getElementById('ops-sisa-saldo').innerText = `Rp ${saldo.toLocaleString('id-ID')}`;
-            const tbody = document.getElementById('tbody-ops');
-            tbody.innerHTML = data.map(o => `
-                <tr>
-                    ${isAdmin ? `<td class="px-3 py-2 text-center"><input type="checkbox" class="cb-ops" value="${o.id}"></td>` : ''}
-                    <td class="px-3 py-2">${o.tanggal}</td>
-                    <td class="px-3 py-2"><span class="${o.tipe === 'masuk' ? 'text-green-600' : 'text-red-600'} font-medium">${o.tipe.toUpperCase()}</span></td>
-                    <td class="px-3 py-2">${profileData.nama}</td>
-                    <td class="px-3 py-2">${o.lokasi}</td>
-                    <td class="px-3 py-2">${o.deskripsi || '-'}</td>
-                    <td class="px-3 py-2">${o.qty || 1}</td>
-                    <td class="px-3 py-2">Rp ${o.jumlah.toLocaleString('id-ID')}</td>
-                    ${isAdmin ? `<td class="px-3 py-2 text-center"><button onclick="bukaModalEdit('operasional', ${JSON.stringify(o).replace(/"/g, '&quot;')})" class="text-blue-600 text-xs">Edit</button></td>` : ''}
-                </tr>
-            `).join('');
-        }
+                let htmlFields = '';
 
-        async function simpanDataKasbon(e) {
-            e.preventDefault();
-            const data = {
-                user_id: document.getElementById('bon-user-id').value,
-                tanggal: document.getElementById('bon-tgl').value,
-                nominal: Number(document.getElementById('bon-nominal').value),
-                keterangan: document.getElementById('bon-keterangan').value
-            };
-            const { error } = await supabase.from('kasbon').insert(data);
-            if (error) alert("Gagal simpan: " + error.message);
-            else { alert("Data kasbon tersimpan!"); refreshMenuAktif(); }
-        }
+                if (namaTabel === 'absensi') {
+                    htmlFields = `
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Line Progres</label><input type="text" id="field-line_progres" value="${data.line_progres || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Status Hadir</label><select id="field-status_hadir" class="w-full p-2 border rounded-xl text-xs"><option value="Hadir" ${data.status_hadir==='Hadir'?'selected':''}>Hadir</option><option value="Absen" ${data.status_hadir==='Absen'?'selected':''}>Absen / Izin</option></select></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                    `;
+                } else if (namaTabel === 'operasional') {
+                    htmlFields = `
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tipe</label><select id="field-tipe" class="w-full p-2 border rounded-xl text-xs"><option value="Masuk" ${data.tipe==='Masuk'?'selected':''}>Masuk</option><option value="Keluar" ${data.tipe==='Keluar'?'selected':''}>Keluar</option></select></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Lokasi</label><input type="text" id="field-lokasi" value="${data.lokasi || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Deskripsi Item</label><input type="text" id="field-deskripsi_item" value="${data.deskripsi_item || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Qty</label><input type="number" id="field-qty" value="${data.qty || 1}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Jumlah Nominal (Rp)</label><input type="number" id="field-jumlah" value="${data.jumlah || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                    `;
+                } else if (namaTabel === 'kasbon') {
+                    htmlFields = `
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Nominal Kasbon (Rp)</label><input type="number" id="field-nominal" value="${data.nominal || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                    `;
+                } else if (namaTabel === 'material_node_b') {
+                    htmlFields = `
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Site ID</label><input type="text" id="field-site_id" value="${data.site_id || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Nama Material</label><input type="text" id="field-nama_material" value="${data.nama_material || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Satuan</label><input type="text" id="field-satuan" value="${data.satuan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Qty Masuk</label><input type="number" id="field-qty_masuk" value="${data.qty_masuk || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Qty Keluar</label><input type="number" id="field-qty_keluar" value="${data.qty_keluar || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                    `;
+                } else if (namaTabel === 'progres_node_b') {
+                    htmlFields = `
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Nama Site</label><input type="text" id="field-nama_site" value="${data.nama_site || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal Mulai</label><input type="date" id="field-tanggal_mulai" value="${data.tanggal_mulai}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Status Progres</label><input type="text" id="field-status_progres" value="${data.status_progres || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal Selesai</label><input type="date" id="field-tanggal_selesai" value="${data.tanggal_selesai || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                    `;
+                } else if (namaTabel === 'toll_bensin') {
+                    htmlFields = `
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Kategori</label><select id="field-kategori" class="w-full p-2 border rounded-xl text-xs"><option value="Bensin" ${data.kategori==='Bensin'?'selected':''}>Bensin</option><option value="Toll" ${data.kategori==='Toll'?'selected':''}>Toll</option></select></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Nominal (Rp)</label><input type="number" id="field-nominal" value="${data.nominal || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                    `;
+                } else if (namaTabel === 'maintenance_kendaraan') {
+                    htmlFields = `
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Jenis Kendaraan</label><input type="text" id="field-jenis_kendaraan" value="${data.jenis_kendaraan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Kilometer</label><input type="number" id="field-kilometer" value="${data.kilometer || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Biaya (Rp)</label><input type="number" id="field-biaya" value="${data.biaya || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                    `;
+                } else if (namaTabel === 'faktur_pajak') {
+                    htmlFields = `
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">No Faktur / Plat</label><input type="text" id="field-nomor_faktur" value="${data.nomor_faktur || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Biaya (Rp)</label><input type="number" id="field-biaya" value="${data.biaya || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
+                    `;
+                }
 
-        async function muatDataKasbon() {
-            const { data } = await supabase.from('kasbon').select('*, profiles(nama)').order('tanggal', { ascending: false });
-            cacheKasbon = data;
-            const tbody = document.getElementById('tbody-kasbon');
-            tbody.innerHTML = data.map(b => `
-                <tr>
-                    ${isAdmin ? `<td class="px-3 py-2 text-center"><input type="checkbox" class="cb-kasbon" value="${b.id}"></td>` : ''}
-                    <td class="px-3 py-2">${b.tanggal}</td>
-                    <td class="px-3 py-2">${b.profiles?.nama || '-'}</td>
-                    <td class="px-3 py-2">Rp ${b.nominal.toLocaleString('id-ID')}</td>
-                    <td class="px-3 py-2">${b.keterangan || '-'}</td>
-                    ${isAdmin ? `<td class="px-3 py-2 text-center"><button onclick="bukaModalEdit('kasbon', ${JSON.stringify(b).replace(/"/g, '&quot;')})" class="text-blue-600 text-xs">Edit</button></td>` : ''}
-                </tr>
-            `).join('');
-        }
-
-        async function simpanDataMaterial(e) {
-            e.preventDefault();
-            const fotoFile = document.getElementById('mat-foto').files[0];
-            let fotoBase64 = null;
-            if (fotoFile) fotoBase64 = await dapatkanBase64(fotoFile);
-            
-            const data = {
-                user_id: currentUser.id,
-                tanggal: document.getElementById('mat-tgl').value,
-                nama_item: document.getElementById('mat-nama').value,
-                jumlah: Number(document.getElementById('mat-jumlah').value),
-                satuan: document.getElementById('mat-satuan').value,
-                lokasi: document.getElementById('mat-lokasi').value,
-                foto_bukti: fotoBase64
-            };
-            const { error } = await supabase.from('material_node_b').insert(data);
-            if (error) alert("Gagal simpan: " + error.message);
-            else { alert("Data material tersimpan!"); refreshMenuAktif(); }
-        }
-
-        async function muatDataMaterial() {
-            const { data } = await supabase.from('material_node_b').select('*').order('tanggal', { ascending: false });
-            cacheMaterialNodeB = data;
-            const tbody = document.getElementById('tbody-material');
-            tbody.innerHTML = data.map(m => `
-                <tr>
-                    ${isAdmin ? `<td class="px-3 py-2 text-center"><input type="checkbox" class="cb-material" value="${m.id}"></td>` : ''}
-                    <td class="px-3 py-2">${m.tanggal}</td>
-                    <td class="px-3 py-2">${m.nama_item}</td>
-                    <td class="px-3 py-2">${m.jumlah} ${m.satuan}</td>
-                    <td class="px-3 py-2">${m.lokasi}</td>
-                    <td class="px-3 py-2">${m.foto_bukti ? `<button onclick="bukaModalFoto('${m.foto_bukti}')" class="text-blue-600 text-xs">Lihat</button>` : '-'}</td>
-                    ${isAdmin ? `<td class="px-3 py-2 text-center"><button onclick="bukaModalEdit('material_node_b', ${JSON.stringify(m).replace(/"/g, '&quot;')})" class="text-blue-600 text-xs">Edit</button></td>` : ''}
-                </tr>
-            `).join('');
-        }
-
-        // ======================================
-        // FUNGSI MODAL EDIT & EKSPOR EXCEL
-        // ======================================
-        function bukaModalEdit(namaTabel, dataBaris) {
-            document.getElementById('edit-id-target').value = dataBaris.id;
-            document.getElementById('edit-tabel-target').value = namaTabel;
-            const fields = document.getElementById('modal-edit-fields');
-            fields.innerHTML = Object.keys(dataBaris).filter(k => !['id', 'user_id'].includes(k)).map(k => `
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">${k.toUpperCase()}</label>
-                    <input type="text" name="${k}" value="${dataBaris[k] || ''}" class="w-full px-3 py-2 border rounded-lg bg-slate-50 text-sm">
-                </div>
-            `).join('');
-            document.getElementById('modal-edit-universal').classList.remove('hidden');
+                fieldsContainer.innerHTML = htmlFields;
+                document.getElementById('modal-edit-universal').classList.remove('hidden');
+            } catch (err) { alert("Gagal mengambil data untuk edit: " + err.message); }
         }
 
         function tutupModalEdit() {
@@ -985,23 +1105,797 @@
 
         async function eksekusiUpdateDataMenu(e) {
             e.preventDefault();
-            const id = document.getElementById('edit-id-target').value;
-            const tabel = document.getElementById('edit-tabel-target').value;
-            const formData = new FormData(e.target);
-            const updateData = {};
-            for (let [k, v] of formData.entries()) if (k && v) updateData[k] = v;
+            const idData = document.getElementById('edit-id-target').value;
+            const namaTabel = document.getElementById('edit-tabel-target').value;
             
-            const { error } = await supabase.from(tabel).update(updateData).eq('id', id);
-            if (error) alert("Gagal perbarui: " + error.message);
-            else { alert("Data diperbarui!"); tutupModalEdit(); refreshMenuAktif(); }
+            const fieldsContainer = document.getElementById('modal-edit-fields');
+            const inputs = fieldsContainer.querySelectorAll('input, select, textarea');
+            
+            let payload = {};
+            inputs.forEach(input => {
+                const key = input.id.replace('field-', '');
+                let value = input.value;
+                if (input.type === 'number') value = Number(value);
+                if (value === '') value = null;
+                payload[key] = value;
+            });
+
+            try {
+                const { error } = await supabase.from(namaTabel).update(payload).eq('id', idData);
+                if (error) throw error;
+                alert("Data lapangan berhasil diperbarui!");
+                tutupModalEdit();
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal memperbarui data: " + err.message); }
         }
 
-        function unduhExcelSpesifik(namaSheet, data) {
-            if (!data || data.length === 0) { alert("Belum ada data untuk diunduh."); return; }
-            const ws = XLSX.utils.json_to_sheet(data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, namaSheet);
-            XLSX.writeFile(wb, `Laporan_${namaSheet}_${new Date().toISOString().slice(0,10)}.xlsx`);
+        // ==================== ENGINE BACKEND LOGIC FUNCTIONS ====================
+
+        async function muatHalamanKontrolUser() {
+            try {
+                const tbody = document.getElementById('tbody-kontrol-user');
+                if (!tbody) return;
+
+                const { data: users, error } = await supabase.from('profiles').select('*').order('nama', { ascending: true });
+                if (error) throw error;
+
+                const isAdmin = profileData.role === 'admin';
+
+                tbody.innerHTML = users.map(u => `
+                    <tr class="hover:bg-slate-50 transition">
+                        ${isAdmin ? `<td class="px-3 py-3 text-center"><input type="checkbox" value="${u.id}" class="cb-user"></td>` : ''}
+                        <td class="px-3 py-3 font-bold text-slate-800">${u.nama}</td>
+                        <td class="px-3 py-3">
+                            <button onclick="toggleAccUser('${u.id}', ${u.status_acc})" class="px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border transition duration-150 active:scale-90 ${u.status_acc ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'}">
+                                ${u.status_acc ? '<i class="fa-solid fa-check"></i> AKTIF' : '<i class="fa-solid fa-clock"></i> PENDING'}
+                            </button>
+                        </td>
+                        <td class="px-3 py-3">
+                            <select onchange="ubahAksesRole('${u.id}', this.value)" class="bg-slate-50 border border-slate-200 rounded-lg p-1 text-[11px] font-semibold text-slate-700 focus:outline-none focus:border-blue-500">
+                                <option value="user" ${u.role === 'user' ? 'selected' : ''}>USER</option>
+                                <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>ADMIN</option>
+                            </select>
+                        </td>
+                        <td class="px-3 py-3">
+                            <input type="number" id="ctrl-salary-${u.id}" value="${u.salary_per_hari || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
+                        </td>
+                        <td class="px-3 py-3">
+                            <input type="number" id="ctrl-insentif-${u.id}" value="${u.insentif || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
+                        </td>
+                        <td class="px-3 py-3">
+                            <input type="number" id="ctrl-cicilan-${u.id}" value="${u.cicilan_per_bulan || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
+                        </td>
+                        <td class="px-3 py-3">
+                            <input type="number" id="ctrl-pinjaman-${u.id}" value="${u.sisa_pinjaman || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
+                        </td>
+                        <td class="px-3 py-3 text-center">
+                            <button onclick="simpanFinansialUser('${u.id}')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg transition duration-150 shadow-sm active:scale-95">
+                                <i class="fa-solid fa-floppy-disk"></i> Simpan
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) { alert("Gagal memuat kontrol user: " + err.message); }
+        }
+
+        async function toggleAccUser(userId, currentStatus) {
+            try {
+                const { error } = await supabase.from('profiles').update({ status_acc: !currentStatus }).eq('id', userId);
+                if (error) throw error;
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal merubah status ACC: " + err.message); }
+        }
+
+        async function ubahAksesRole(userId, newRole) {
+            try {
+                const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', userId);
+                if (error) throw error;
+                alert("Hak akses role berhasil diganti!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal mengubah role: " + err.message); }
+        }
+
+        async function simpanFinansialUser(userId) {
+            try {
+                const salary = Number(document.getElementById(`ctrl-salary-${userId}`).value);
+                const insentif = Number(document.getElementById(`ctrl-insentif-${userId}`).value);
+                const cicilan = Number(document.getElementById(`ctrl-cicilan-${userId}`).value);
+                const pinjaman = Number(document.getElementById(`ctrl-pinjaman-${userId}`).value);
+
+                const { error } = await supabase.from('profiles').update({
+                    salary_per_hari: salary,
+                    insentif: insentif,
+                    cicilan_per_bulan: cicilan,
+                    sisa_pinjaman: pinjaman
+                }).eq('id', userId);
+
+                if (error) throw error;
+                alert("Data finansial anggota berhasil disimpan!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal menyimpan data finansial: " + err.message); }
+        }
+
+        async function hitungDanMuatDashboard() {
+            try {
+                const isAdmin = profileData.role === 'admin';
+                
+                if (isAdmin) {
+                    const [resProfiles, resAbsensi, resKasbon, resOps] = await Promise.all([
+                        supabase.from('profiles').select('*').eq('role', 'user'),
+                        supabase.from('absensi').select('user_id, status_hadir'),
+                        supabase.from('kasbon').select('user_id, nominal'),
+                        supabase.from('operasional').select('tipe, jumlah, qty')
+                    ]);
+
+                    const profiles = resProfiles.data || [];
+                    const logAbsen = resAbsensi.data || [];
+                    const logKasbon = resKasbon.data || [];
+
+                    let totalSalaryKolektifAdmin = 0;
+                    profiles.forEach(p => {
+                        const hadir = logAbsen.filter(a => a.user_id === p.id && a.status_hadir === 'Hadir').length;
+                        const kasbonBerjalan = logKasbon.filter(k => k.user_id === p.id).reduce((sum, item) => sum + Number(item.nominal || 0), 0);
+                        
+                        const salaryplay = Number(p.salary_per_hari || 0);
+                        const insentif = Number(p.insentif || 0);
+                        const totalSalaryKotor = (hadir * salaryplay) + insentif;
+                        
+                        const cicilan = Number(p.cicilan_per_bulan || 0);
+                        const salaryAkhirBersih = totalSalaryKotor - kasbonBerjalan - cicilan;
+                        totalSalaryKolektifAdmin += (salaryAkhirBersih > 0 ? salaryAkhirBersih : 0);
+                    });
+
+                    const salEle = document.getElementById('dash-total-salary');
+                    if(salEle) salEle.innerText = `Rp ${totalSalaryKolektifAdmin.toLocaleString('id-ID')}`;
+
+                    const totalHadirAdmin = logAbsen.filter(d => d.status_hadir === 'Hadir').length;
+                    const abEle = document.getElementById('dash-absen');
+                    if(abEle) abEle.innerText = `${totalHadirAdmin} Hari`;
+
+                    let totalMasukOps = 0, totalKeluarOps = 0;
+                    (resOps.data || []).forEach(item => {
+                        const uang = Number(item.jumlah || 0);
+                        const qty = Number(item.qty || 1);
+                        if (item.tipe === 'Masuk') totalMasukOps += uang;
+                        else totalKeluarOps += (uang * qty);
+                    });
+                    const opsEle = document.getElementById('dash-sisa-ops');
+                    if(opsEle) opsEle.innerText = `Rp ${Number(totalMasukOps - totalKeluarOps).toLocaleString('id-ID')}`;
+
+                    let totalKasbonKolektif = 0;
+                    logKasbon.forEach(item => totalKasbonKolektif += Number(item.nominal || 0));
+                    const kbEle = document.getElementById('dash-kasbon-bulan');
+                    if(kbEle) kbEle.innerText = `Rp ${totalKasbonKolektif.toLocaleString('id-ID')}`;
+
+                    let totalSisaPinjamanKolektif = 0;
+                    profiles.forEach(p => totalSisaPinjamanKolektif += Number(p.sisa_pinjaman || 0));
+                    const plEle = document.getElementById('dash-total-kasbon');
+                    if(plEle) plEle.innerText = `Rp ${totalSisaPinjamanKolektif.toLocaleString('id-ID')}`;
+
+                } else {
+                    let qAbsen = supabase.from('absensi').select('status_hadir').eq('user_id', currentUser.id);
+                    let qOps = supabase.from('operasional').select('tipe, jumlah, qty').eq('user_id', currentUser.id);
+                    let qKasbon = supabase.from('kasbon').select('nominal').eq('user_id', currentUser.id);
+
+                    const [resAbsen, resOps, resKasbon] = await Promise.all([qAbsen, qOps, qKasbon]);
+
+                    const totalHadir = (resAbsen.data || []).filter(d => d.status_hadir === 'Hadir').length;
+                    const abEle = document.getElementById('dash-absen');
+                    if(abEle) abEle.innerText = `${totalHadir} Hari`;
+
+                    let totalMasukOps = 0, totalKeluarOps = 0;
+                    (resOps.data || []).forEach(item => {
+                        const uang = Number(item.jumlah || 0);
+                        const qty = Number(item.qty || 1);
+                        if (item.tipe === 'Masuk') totalMasukOps += uang;
+                        else totalKeluarOps += (uang * qty);
+                    });
+                    const opsEle = document.getElementById('dash-sisa-ops');
+                    if(opsEle) opsEle.innerText = `Rp ${Number(totalMasukOps - totalKeluarOps).toLocaleString('id-ID')}`;
+
+                    let totalKasbon = 0;
+                    (resKasbon.data || []).forEach(item => totalKasbon += Number(item.nominal || 0));
+                    const kbEle = document.getElementById('dash-kasbon-bulan');
+                    if(kbEle) kbEle.innerText = `Rp ${Number(totalKasbon).toLocaleString('id-ID')}`;
+
+                    const sisaPinjaman = Number(profileData.sisa_pinjaman || 0);
+                    const plEle = document.getElementById('dash-total-kasbon');
+                    if(plEle) plEle.innerText = `Rp ${Number(sisaPinjaman).toLocaleString('id-ID')}`;
+
+                    const salaryPerHari = Number(profileData.salary_per_hari || 0);
+                    const insentif = Number(profileData.insentif || 0);
+                    const cicilan = Number(profileData.cicilan_per_bulan || 0);
+                    const totalGajiKotor = (totalHadir * salaryPerHari) + insentif;
+                    const gajiBersih = totalGajiKotor - totalKasbon - cicilan;
+
+                    const salEle = document.getElementById('dash-total-salary');
+                    if(salEle) salEle.innerText = `Rp ${Number(gajiBersih > 0 ? gajiBersih : 0).toLocaleString('id-ID')}`;
+                }
+
+            } catch (err) { console.error("Dash error:", err.message); }
+        }
+
+        function renderFormAbsen() {
+            const form = document.getElementById('form-absensi');
+            if (!form) return;
+            form.innerHTML = `
+                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal Hari Ini</label><input type="date" id="absen-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Line Progres / Lokasi</label>
+                    <select id="absen-line" onchange="toggleInputManualLokasi(this.value)" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500">
+                        <option value="Node-B">Node-B</option>
+                        <option value="Revitalisasi">Revitalisasi</option>
+                        <option value="MTN">MTN</option>
+                        <option value="Xenith">Xenith</option>
+                        <option value="Other">Other</option>
+                        <option value="MANUAL">Input secara manual</option>
+                    </select>
+                </div>
+                <div id="container-lokasi-manual" class="hidden">
+                    <label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tulis Lokasi Manual</label>
+                    <input type="text" id="absen-lokasi-manual" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Ketik nama lokasi/site di sini...">
+                </div>
+                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Status Kehadiran</label><select id="absen-status" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"><option value="Hadir">Hadir Kerja</option><option value="Absen">Absen / Izin</option></select></div>
+                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Aktivitas</label><input type="text" id="absen-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Preventif site BDG01"></div>
+                <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Kirim Absensi Saya</button>
+            `;
+            const tglInput = document.getElementById('absen-tgl');
+            if(tglInput) tglInput.valueAsDate = new Date();
+            form.addEventListener('submit', simpanAbsenUser);
+        }
+
+        function toggleInputManualLokasi(nilai) {
+            const wadah = document.getElementById('container-lokasi-manual');
+            const inputKetik = document.getElementById('absen-lokasi-manual');
+            if(nilai === 'MANUAL') {
+                wadah.classList.remove('hidden');
+                inputKetik.required = true;
+            } else {
+                wadah.classList.add('hidden');
+                inputKetik.required = false;
+                inputKetik.value = '';
+            }
+        }
+
+        async function muatOpsiMemberKasbon() {
+            try {
+                const { data, error } = await supabase.from('profiles').select('id, nama').eq('role', 'user');
+                if (error) throw error;
+                const select = document.getElementById('bon-user-id');
+                if(select) select.innerHTML = (data || []).map(d => `<option value="${d.id}">${d.nama}</option>`).join('');
+            } catch (err) { console.error(err.message); }
+        }
+
+        async function simpanAbsenUser(e) {
+            e.preventDefault();
+            try {
+                const tglDipilih = document.getElementById('absen-tgl').value;
+                
+                // Validasi Aturan: User tidak boleh melakukan absensi ganda pada tanggal yang sama
+                const { data: cekAbsen, error: errorCek } = await supabase
+                    .from('absensi')
+                    .select('id')
+                    .eq('user_id', currentUser.id)
+                    .eq('tanggal', tglDipilih)
+                    .maybeSingle();
+                
+                if (errorCek) throw errorCek;
+                if (cekAbsen) {
+                    alert(`Gagal Kirim! Anda sudah tercatat melakukan absensi pada tanggal ${tglDipilih}. Anda tidak dapat absen dua kali pada hari yang sama.`);
+                    return;
+                }
+
+                let lineProgresValue = document.getElementById('absen-line').value;
+                if(lineProgresValue === 'MANUAL') {
+                    lineProgresValue = document.getElementById('absen-lokasi-manual').value;
+                }
+
+                const payload = {
+                    user_id: currentUser.id,
+                    nama_user: profileData.nama,
+                    tanggal: tglDipilih,
+                    line_progres: lineProgresValue,
+                    status_hadir: document.getElementById('absen-status').value,
+                    keterangan: document.getElementById('absen-ket').value
+                };
+
+                const { error } = await supabase.from('absensi').insert([payload]);
+                if (error) throw error;
+                alert("Absensi berhasil terkirim!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal absen: " + err.message); }
+        }
+
+        async function muatTabelAbsen(isAdmin) {
+            try {
+                const tbody = document.getElementById('tbody-absensi');
+                if (!tbody) return;
+
+                let query = supabase.from('absensi').select('*').order('tanggal', { ascending: false });
+                if (!isAdmin) query = query.eq('user_id', currentUser.id);
+
+                const { data, error } = await query;
+                if (error) throw error;
+                cacheAbsensi = data || [];
+
+                tbody.innerHTML = cacheAbsensi.map(d => `
+                    <tr class="hover:bg-slate-50">
+                        ${isAdmin ? `<td class="px-3 py-2.5 text-center"><input type="checkbox" value="${d.id}" class="cb-absen"></td>` : ''}
+                        <td class="px-3 py-2.5 font-medium">${d.tanggal}</td>
+                        <td class="px-3 py-2.5 font-semibold text-slate-700">${d.nama_user || '-'}</td>
+                        <td class="px-3 py-2.5"><span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-bold text-[10px] border border-blue-200">${d.line_progres || 'Node-B'}</span></td>
+                        <td class="px-3 py-2.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${d.status_hadir === 'Hadir' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}">${d.status_hadir}</span></td>
+                        <td class="px-3 py-2.5 text-slate-500 max-w-[150px] truncate">${d.keterangan || '-'}</td>
+                        ${cetakTombolAksiAdmin('absensi', d.id)}
+                    </tr>
+                `).join('');
+            } catch (err) { console.error(err.message); }
+        }
+
+        async function simpanOpsMasuk(e) {
+            e.preventDefault();
+            try {
+                const payload = {
+                    user_id: currentUser.id,
+                    nama_user: profileData.nama,
+                    tipe: 'Masuk',
+                    lokasi: document.getElementById('in-ops-lokasi').value,
+                    tanggal: document.getElementById('in-ops-tgl').value,
+                    jumlah: Number(document.getElementById('in-ops-jumlah').value),
+                    qty: 1,
+                    deskripsi_item: 'Penerimaan Dana OPS'
+                };
+                const { error } = await supabase.from('operasional').insert([payload]);
+                if (error) throw error;
+                alert("Dana OPS Masuk Berhasil Di-Log!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal input kas masuk: " + err.message); }
+        }
+
+        async function simpanOpsKeluar(e) {
+            e.preventDefault();
+            try {
+                const payload = {
+                    user_id: currentUser.id,
+                    nama_user: profileData.nama,
+                    tipe: 'Keluar',
+                    lokasi: document.getElementById('out-ops-lokasi').value,
+                    tanggal: document.getElementById('out-ops-tgl').value,
+                    deskripsi_item: document.getElementById('out-ops-list').value,
+                    qty: Number(document.getElementById('out-ops-qty').value),
+                    jumlah: Number(document.getElementById('out-ops-jumlah').value)
+                };
+                const { error } = await supabase.from('operasional').insert([payload]);
+                if (error) throw error;
+                alert("Pengeluaran OPS Berhasil Di-Log!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal input kas keluar: " + err.message); }
+        }
+
+        async function muatTabelOpsDanSisa() {
+            try {
+                const tbody = document.getElementById('tbody-ops');
+                if(!tbody) return;
+
+                const isAdmin = profileData.role === 'admin';
+                let query = supabase.from('operasional').select('*').order('tanggal', { ascending: false });
+                if (!isAdmin) query = query.eq('user_id', currentUser.id);
+
+                const { data, error } = await query;
+                if (error) throw error;
+                cacheOperasional = data || [];
+
+                let totalMasuk = 0, totalKeluar = 0;
+                tbody.innerHTML = cacheOperasional.map(d => {
+                    const uang = Number(d.jumlah || 0);
+                    const qty = Number(d.qty || 1);
+                    if (d.tipe === 'Masuk') totalMasuk += uang;
+                    else totalKeluar += (uang * qty);
+
+                    return `
+                        <tr class="hover:bg-slate-50">
+                            ${isAdmin ? `<td class="px-3 py-2.5 text-center"><input type="checkbox" value="${d.id}" class="cb-ops"></td>` : ''}
+                            <td class="px-3 py-2.5">${d.tanggal}</td>
+                            <td class="px-3 py-2.5 font-bold ${d.tipe === 'Masuk' ? 'text-green-600' : 'text-red-600'}">${d.tipe.toUpperCase()}</td>
+                            <td class="px-3 py-2.5 text-slate-600 font-medium">${d.nama_user || '-'}</td>
+                            <td class="px-3 py-2.5">${d.lokasi || '-'}</td>
+                            <td class="px-3 py-2.5 text-slate-500">${d.deskripsi_item || '-'}</td>
+                            <td class="px-3 py-2.5 font-medium">${qty}</td>
+                            <td class="px-3 py-2.5 font-semibold text-slate-900">Rp ${uang.toLocaleString('id-ID')}</td>
+                            ${cetakTombolAksiAdmin('operasional', d.id)}
+                        </tr>
+                    `;
+                }).join('');
+
+                const sisa = totalMasuk - totalKeluar;
+                const boxSaldo = document.getElementById('ops-sisa-saldo');
+                if (boxSaldo) boxSaldo.innerText = `Rp ${sisa.toLocaleString('id-ID')}`;
+            } catch (err) { console.error(err.message); }
+        }
+
+        async function simpanKasbonMandiri(e) {
+            e.preventDefault();
+            try {
+                const uidTarget = document.getElementById('bon-user-id').value;
+                const tgl = document.getElementById('bon-tgl').value;
+                const nominal = Number(document.getElementById('bon-jumlah').value);
+                const ket = document.getElementById('bon-ket').value;
+
+                const { data: memberProfil } = await supabase.from('profiles').select('nama').eq('id', uidTarget).single();
+
+                const payload = {
+                    user_id: uidTarget,
+                    nama_user: memberProfil?.nama || 'Anggota Tim',
+                    tanggal: tgl,
+                    nominal: nominal,
+                    keterangan: ket
+                };
+
+                const { error } = await supabase.from('kasbon').insert([payload]);
+                if (error) throw error;
+                alert("Log pinjaman baru berhasil disimpan!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal simpan kasbon: " + err.message); }
+        }
+
+        async function muatHalamanKasbon() {
+            try {
+                const tbody = document.getElementById('tbody-kasbon');
+                if(!tbody) return;
+
+                const { data, error } = await supabase.from('kasbon').select('*').order('tanggal', { ascending: false });
+                if (error) throw error;
+                cacheKasbon = data || [];
+
+                const isAdmin = profileData.role === 'admin';
+
+                tbody.innerHTML = cacheKasbon.map(d => `
+                    <tr class="hover:bg-slate-50">
+                        ${isAdmin ? `<td class="px-3 py-2.5 text-center"><input type="checkbox" value="${d.id}" class="cb-kasbon"></td>` : ''}
+                        <td class="px-3 py-2.5">${d.tanggal}</td>
+                        <td class="px-3 py-2.5 font-semibold text-slate-700">${d.nama_user || '-'}</td>
+                        <td class="px-3 py-2.5 text-red-600 font-bold">Rp ${Number(d.nominal).toLocaleString('id-ID')}</td>
+                        <td class="px-3 py-2.5 text-slate-500">${d.keterangan || '-'}</td>
+                        ${cetakTombolAksiAdmin('kasbon', d.id)}
+                    </tr>
+                `).join('');
+            } catch (err) { console.error(err.message); }
+        }
+
+        async function simpanMaterialMaterialNodeB(e) {
+            e.preventDefault();
+            try {
+                const payload = {
+                    user_id: currentUser.id,
+                    pic_nama: profileData.nama,
+                    site_id: document.getElementById('mat-site-id').value,
+                    tanggal: document.getElementById('mat-tgl').value,
+                    nama_material: document.getElementById('mat-nama').value,
+                    satuan: document.getElementById('mat-satuan').value,
+                    qty_masuk: Number(document.getElementById('mat-masuk').value),
+                    qty_keluar: Number(document.getElementById('mat-keluar').value),
+                    keterangan: document.getElementById('mat-ket').value
+                };
+
+                const { error } = await supabase.from('material_node_b').insert([payload]);
+                if (error) throw error;
+                alert("Material Berhasil Di-Log!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal input material: " + err.message); }
+        }
+
+        async function muatTabelMaterialNodeB() {
+            try {
+                const tbody = document.getElementById('tbody-material-nodeb');
+                if(!tbody) return;
+
+                const isAdmin = profileData.role === 'admin';
+                let query = supabase.from('material_node_b').select('*').order('tanggal', { ascending: false });
+
+                const { data, error } = await query;
+                if (error) throw error;
+                cacheMaterialNodeB = data || [];
+
+                tbody.innerHTML = cacheMaterialNodeB.map(d => {
+                    const masuk = Number(d.qty_masuk || 0);
+                    const keluar = Number(d.qty_keluar || 0);
+                    const sisa = masuk - keluar;
+                    return `
+                        <tr class="hover:bg-slate-50">
+                            ${isAdmin ? `<td class="px-3 py-2.5 text-center"><input type="checkbox" value="${d.id}" class="cb-mat"></td>` : ''}
+                            <td class="px-3 py-2.5 font-bold text-slate-900">${d.site_id || '-'}</td>
+                            <td class="px-3 py-2.5">${d.tanggal}</td>
+                            <td class="px-3 py-2.5 font-medium text-slate-700">${d.nama_material || '-'}</td>
+                            <td class="px-3 py-2.5 text-slate-400 font-bold">${d.satuan}</td>
+                            <td class="px-3 py-2.5 text-green-600 font-semibold">${masuk}</td>
+                            <td class="px-3 py-2.5 text-red-600 font-semibold">${keluar}</td>
+                            <td class="px-3 py-2.5 bg-blue-50 text-blue-700 font-bold">${sisa}</td>
+                            <td class="px-3 py-2.5 text-slate-600">${d.pic_nama || '-'}</td>
+                            <td class="px-3 py-2.5 text-slate-400 max-w-[100px] truncate">${d.keterangan || '-'}</td>
+                            ${cetakTombolAksiAdmin('material_node_b', d.id)}
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) { console.error(err.message); }
+        }
+
+        async function simpanProgresNodeB(e) {
+            e.preventDefault();
+            try {
+                const payload = {
+                    user_id: currentUser.id,
+                    pic_nama: profileData.nama,
+                    nama_site: document.getElementById('prog-site').value,
+                    tanggal_mulai: document.getElementById('prog-mulai').value,
+                    tanggal_selesai: document.getElementById('prog-selesai').value || null,
+                    status_progres: document.getElementById('prog-status').value,
+                    keterangan: document.getElementById('prog-ket').value
+                };
+
+                const { error } = await supabase.from('progres_node_b').insert([payload]);
+                if (error) throw error;
+                alert("Update Progres Berhasil!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal update progres: " + err.message); }
+        }
+
+        async function muatTabelProgresNodeB() {
+            try {
+                const tbody = document.getElementById('tbody-progres-nodeb');
+                if(!tbody) return;
+
+                const isAdmin = profileData.role === 'admin';
+                let query = supabase.from('progres_node_b').select('*').order('tanggal_mulai', { ascending: false });
+
+                const { data, error } = await query;
+                if (error) throw error;
+                cacheProgresNodeB = data || [];
+
+                tbody.innerHTML = cacheProgresNodeB.map(d => `
+                    <tr class="hover:bg-slate-50">
+                        ${isAdmin ? `<td class="px-3 py-2.5 text-center"><input type="checkbox" value="${d.id}" class="cb-prog"></td>` : ''}
+                        <td class="px-3 py-2.5 font-bold text-slate-900">${d.nama_site || '-'}</td>
+                        <td class="px-3 py-2.5">${d.tanggal_mulai}</td>
+                        <td class="px-3 py-2.5 font-semibold text-blue-600">${d.status_progres || '-'}</td>
+                        <td class="px-3 py-2.5 text-slate-500">${d.tanggal_selesai || '<span class="text-amber-500 font-medium">Running</span>'}</td>
+                        <td class="px-3 py-2.5 font-medium text-slate-700">${d.pic_nama || '-'}</td>
+                        <td class="px-3 py-2.5 text-slate-400">${d.keterangan || '-'}</td>
+                        ${cetakTombolAksiAdmin('progres_node_b', d.id)}
+                    </tr>
+                `).join('');
+            } catch (err) { console.error(err.message); }
+        }
+
+        async function simpanTollBensin(e) {
+            e.preventDefault();
+            try {
+                let stringFoto64 = null;
+                const inputFoto = document.getElementById('toll-foto');
+                if(inputFoto && inputFoto.files.length > 0) {
+                    stringFoto64 = await dapatkanBase64(inputFoto.files[0]);
+                }
+
+                const payload = {
+                    user_id: currentUser.id,
+                    nama_user: profileData.nama,
+                    tanggal: document.getElementById('toll-tgl').value,
+                    kategori: document.getElementById('toll-kat').value,
+                    nominal: Number(document.getElementById('toll-nominal').value),
+                    keterangan: document.getElementById('toll-ket').value,
+                    foto_struk: stringFoto64 
+                };
+
+                const { error } = await supabase.from('toll_bensin').insert([payload]);
+                if (error) throw error;
+                alert("Data Klaim Toll & Bensin Berhasil Disimpan!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal klaim: " + err.message); }
+        }
+
+        async function muatTabelTollBensin() {
+            try {
+                const tbody = document.getElementById('tbody-tollbensin');
+                if(!tbody) return;
+
+                const isAdmin = profileData.role === 'admin';
+                let query = supabase.from('toll_bensin').select('*').order('tanggal', { ascending: false });
+
+                const { data, error } = await query;
+                if (error) throw error;
+                cacheTollBensin = data || [];
+
+                tbody.innerHTML = cacheTollBensin.map(d => `
+                    <tr class="hover:bg-slate-50">
+                        ${isAdmin ? `<td class="px-3 py-2.5 text-center"><input type="checkbox" value="${d.id}" class="cb-toll"></td>` : ''}
+                        <td class="px-3 py-2.5 font-medium">${d.tanggal}</td>
+                        <td class="px-3 py-2.5 font-semibold text-slate-700">${d.nama_user || '-'}</td>
+                        <td class="px-3 py-2.5"><span class="px-2 py-0.5 rounded text-[11px] font-bold ${d.kategori === 'Bensin' ? 'bg-amber-50 text-amber-700' : 'bg-indigo-50 text-indigo-700'}">${d.kategori}</span></td>
+                        <td class="px-3 py-2.5 font-bold text-slate-900">Rp ${Number(d.nominal).toLocaleString('id-ID')}</td>
+                        <td class="px-3 py-2.5 text-slate-500">${d.keterangan || '-'}</td>
+                        <td class="px-3 py-2.5 text-center">
+                            ${d.foto_struk ? `<button onclick="bukaModalFoto('${d.foto_struk}')" class="text-blue-600 hover:text-blue-800 font-bold bg-blue-50 px-2 py-1 rounded border border-blue-200"><i class="fa-solid fa-image"></i> Lihat</button>` : '<span class="text-slate-400 text-xs">Tidak ada</span>'}
+                        </td>
+                        ${cetakTombolAksiAdmin('toll_bensin', d.id)}
+                    </tr>
+                `).join('');
+            } catch (err) { console.error(err.message); }
+        }
+
+        async function simpanMaintenanceKendaraan(e) {
+            e.preventDefault();
+            try {
+                let stringFoto64 = null;
+                const inputFoto = document.getElementById('maint-foto');
+                if(inputFoto && inputFoto.files.length > 0) {
+                    stringFoto64 = await dapatkanBase64(inputFoto.files[0]);
+                }
+
+                const payload = {
+                    user_id: currentUser.id,
+                    nama_user: profileData.nama,
+                    jenis_kendaraan: document.getElementById('maint-jenis').value,
+                    tanggal: document.getElementById('maint-tgl').value,
+                    kilometer: Number(document.getElementById('maint-km').value),
+                    biaya: Number(document.getElementById('maint-biaya').value),
+                    foto_struk: stringFoto64,
+                    keterangan: document.getElementById('maint-ket').value
+                };
+
+                const { error } = await supabase.from('maintenance_kendaraan').insert([payload]);
+                if (error) throw error;
+                alert("Data Servis Kendaraan Berhasil Disimpan!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal Menyimpan Data: " + err.message); }
+        }
+
+        async function muatTabelMaintenance() {
+            try {
+                const tbody = document.getElementById('tbody-maintenance');
+                if (!tbody) return;
+
+                const isAdmin = profileData.role === 'admin';
+                let query = supabase.from('maintenance_kendaraan').select('*').order('tanggal', { ascending: false });
+                
+                const { data, error } = await query;
+                if (error) throw error;
+                cacheMaintenance = data || [];
+                
+                if (cacheMaintenance.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="${isAdmin?8:7}" class="px-3 py-4 text-center text-slate-400">Belum ada riwayat perbaikan.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = cacheMaintenance.map(d => `
+                    <tr class="hover:bg-slate-50">
+                        ${isAdmin ? `<td class="px-3 py-2.5 text-center"><input type="checkbox" value="${d.id}" class="cb-maint"></td>` : ''}
+                        <td class="px-3 py-2.5 font-medium">${d.tanggal}</td>
+                        <td class="px-3 py-2.5 font-semibold text-slate-700">${d.nama_user || '-'}</td>
+                        <td class="px-3 py-2.5 text-slate-600">${d.jenis_kendaraan || '-'}</td>
+                        <td class="px-3 py-2.5">${Number(d.kilometer || 0).toLocaleString('id-ID')} KM</td>
+                        <td class="px-3 py-2.5 text-red-600 font-bold">Rp ${Number(d.biaya).toLocaleString('id-ID')}</td>
+                        <td class="px-3 py-2.5 text-slate-500 max-w-[200px] truncate" title="${d.keterangan}">${d.keterangan || '-'}</td>
+                        <td class="px-3 py-2.5 text-center">
+                            ${d.foto_struk ? `<button onclick="bukaModalFoto('${d.foto_struk}')" class="text-blue-600 hover:text-blue-800 font-bold bg-blue-50 px-2 py-1 rounded border border-blue-200"><i class="fa-solid fa-image"></i> Lihat</button>` : '<span class="text-slate-400 text-xs">Tidak ada</span>'}
+                        </td>
+                        ${cetakTombolAksiAdmin('maintenance_kendaraan', d.id)}
+                    </tr>
+                `).join('');
+            } catch (err) { console.error(err.message); }
+        }
+
+        async function simpanFakturPajakKendaraan(e) {
+            e.preventDefault();
+            try {
+                let stringFoto64 = null;
+                const inputFoto = document.getElementById('pajak-foto');
+                if(inputFoto && inputFoto.files.length > 0) {
+                    stringFoto64 = await dapatkanBase64(inputFoto.files[0]);
+                }
+
+                const payload = {
+                    user_id: currentUser.id,
+                    pic_pengisi: profileData.nama,
+                    nomor_faktur: document.getElementById('pajak-nomor').value,
+                    tanggal: document.getElementById('pajak-tgl').value,
+                    biaya: Number(document.getElementById('pajak-biaya').value),
+                    keterangan: document.getElementById('pajak-ket').value,
+                    foto_struk: stringFoto64
+                };
+
+                const { error } = await supabase.from('faktur_pajak').insert([payload]);
+                if (error) throw error;
+                alert("Data Faktur Pajak Berhasil Disimpan!");
+                refreshMenuAktif();
+            } catch (err) { alert("Gagal Menyimpan Data Faktur: " + err.message); }
+        }
+
+        async function muatTabelFakturPajak() {
+            try {
+                const tbody = document.getElementById('tbody-faktur-pajak');
+                if (!tbody) return;
+
+                const isAdmin = profileData.role === 'admin';
+                let query = supabase.from('faktur_pajak').select('*').order('tanggal', { ascending: false });
+                
+                const { data, error } = await query;
+                if (error) throw error;
+                cacheFakturPajak = data || [];
+
+                if (cacheFakturPajak.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="${isAdmin?7:6}" class="px-3 py-4 text-center text-slate-400">Belum ada riwayat faktur pajak.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = cacheFakturPajak.map(d => `
+                    <tr class="hover:bg-slate-50">
+                        ${isAdmin ? `<td class="px-3 py-2.5 text-center"><input type="checkbox" value="${d.id}" class="cb-pajak"></td>` : ''}
+                        <td class="px-3 py-2.5 font-medium">${d.tanggal}</td>
+                        <td class="px-3 py-2.5 font-semibold text-slate-700">${d.pic_pengisi || '-'}</td>
+                        <td class="px-3 py-2.5 text-slate-900 font-bold">${d.nomor_faktur || '-'}</td>
+                        <td class="px-3 py-2.5 text-emerald-600 font-bold">Rp ${Number(d.biaya || 0).toLocaleString('id-ID')}</td>
+                        <td class="px-3 py-2.5 text-slate-500">${d.keterangan || '-'}</td>
+                        <td class="px-3 py-2.5 text-center">
+                            ${d.foto_struk ? `<button onclick="bukaModalFoto('${d.foto_struk}')" class="text-blue-600 hover:text-blue-800 font-bold bg-blue-50 px-2 py-1 rounded border border-blue-200"><i class="fa-solid fa-image"></i> Lihat</button>` : '<span class="text-slate-400 text-xs">Tidak ada</span>'}
+                        </td>
+                        ${cetakTombolAksiAdmin('faktur_pajak', d.id)}
+                    </tr>
+                `).join('');
+            } catch (err) { console.error(err.message); }
+        }
+
+        async function muatLaporanMatriksFinansial() {
+            try {
+                const tbody = document.getElementById('tbody-laporan-matriks');
+                if(!tbody) return;
+
+                const [resProfiles, resAbsensi, resKasbon] = await Promise.all([
+                    supabase.from('profiles').select('*').eq('role', 'user').order('nama', { ascending: true }),
+                    supabase.from('absensi').select('user_id, status_hadir'),
+                    supabase.from('kasbon').select('user_id, nominal')
+                ]);
+
+                const profiles = resProfiles.data || [];
+                const logAbsen = resAbsensi.data || [];
+                const logKasbon = resKasbon.data || [];
+
+                tbody.innerHTML = profiles.map(p => {
+                    const hadir = logAbsen.filter(a => a.user_id === p.id && a.status_hadir === 'Hadir').length;
+                    const kasbonBerjalan = logKasbon.filter(k => k.user_id === p.id).reduce((sum, item) => sum + Number(item.nominal || 0), 0);
+                    
+                    const salaryPerHari = Number(p.salary_per_hari || 0);
+                    const insentif = Number(p.insentif || 0);
+                    const totalSalaryKotor = (hadir * salaryPerHari) + insentif;
+                    
+                    const totalPinjamanPlafon = Number(p.sisa_pinjaman || 0);
+                    const cicilan = Number(p.cicilan_per_bulan || 0);
+                    const sisaPinjamanPlafonAkhir = totalPinjamanPlafon - cicilan;
+                    
+                    const salaryAkhirBersih = totalSalaryKotor - kasbonBerjalan - cicilan;
+
+                    return `
+                        <tr class="hover:bg-slate-50 transition font-medium text-slate-700">
+                            <td class="p-3 font-bold text-slate-900">${p.nama}</td>
+                            <td class="p-3">${hadir} Hari</td>
+                            <td class="p-3">Rp ${salaryPerHari.toLocaleString('id-ID')}</td>
+                            <td class="p-3">Rp ${insentif.toLocaleString('id-ID')}</td>
+                            <td class="p-3 text-emerald-600 font-bold">Rp ${totalSalaryKotor.toLocaleString('id-ID')}</td>
+                            <td class="p-3 text-slate-400">Rp ${totalPinjamanPlafon.toLocaleString('id-ID')}</td>
+                            <td class="p-3 text-red-500">Rp ${kasbonBerjalan.toLocaleString('id-ID')}</td>
+                            <td class="p-3 text-amber-600">Rp ${cicilan.toLocaleString('id-ID')}</td>
+                            <td class="p-3 text-slate-500">Rp ${(sisaPinjamanPlafonAkhir > 0 ? sisaPinjamanPlafonAkhir : 0).toLocaleString('id-ID')}</td>
+                            <td class="p-3 bg-blue-50 text-blue-700 font-bold text-xs">Rp ${(salaryAkhirBersih > 0 ? salaryAkhirBersih : 0).toLocaleString('id-ID')}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) { console.error(err.message); }
+        }
+
+        function unduhExcelSpesifik(namaBerkas, dataSorce) {
+            if(!dataSorce || dataSorce.length === 0) { alert("Tidak ada data untuk diexport."); return; }
+            const worksheet = XLSX.utils.json_to_sheet(dataSorce);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Data_Lapangan");
+            XLSX.writeFile(workbook, `Laporan_${namaBerkas}_Field.xlsx`);
         }
     </script>
 </body>
