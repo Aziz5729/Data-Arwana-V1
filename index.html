@@ -231,7 +231,7 @@
         
         async function handleForgotPassword(email) {
           const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://aziz5729.github.io/Data-Arwana-V1/update-password.html', // Halaman untuk input password baru
+            redirectTo: 'https://aziz5729.github.io/Data-Arwana-V1/update-password.html', 
           });
 
           if (error) {
