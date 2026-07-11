@@ -129,7 +129,7 @@
             <img id="img-preview-target" src="" class="w-full h-auto max-h-[80vh] object-contain rounded-xl" alt="Preview Bukti">
         </div>
     </div>
-
+    
     <script>
         const SUPABASE_URL = "https://uczqzarbuunjrkefdsdj.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_3jk79pXdGHa88negFx1TGw_z2JnHnrO"; 
@@ -226,7 +226,32 @@
                 }
             } catch (err) { alert("Sistem Menolak: " + err.message); }
         }
+        
+        async function handleForgotPassword(email) {
+          const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: 'https://aziz5729.github.io/Data-Arwana-V1/', // Halaman untuk input password baru
+          });
 
+          if (error) {
+            alert("Error: " + error.message);
+          } else {
+            alert("Cek email Anda untuk link reset password.");
+          }
+        }
+
+        async function updatePassword(newPassword) {
+          const { data, error } = await supabase.auth.updateUser({
+            password: newPassword
+          });
+        
+          if (error) {
+            alert("Gagal update password: " + error.message);
+          } else {
+            alert("Password berhasil diperbarui!");
+            window.location.href = "login.html";
+          }
+        }
+        
         async function ambilProfilDanMasuk(user) {
             try {
                 const { data: profile, error } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
