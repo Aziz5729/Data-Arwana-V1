@@ -130,53 +130,6 @@
         </div>
     </div>
 
-        <!-- Modal Reset Password Admin -->
-    <div id="modal-reset-password" class="fixed inset-0 z-50 bg-slate-900/60 items-center justify-center p-4 hidden flex">
-        <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-xs fade-in">
-            <h3 class="font-bold text-slate-900 mb-4">Reset Password User</h3>
-            <input type="hidden" id="reset-user-id">
-            <input type="password" id="new-password-field" placeholder="Masukkan password baru" class="w-full px-3 py-2 border rounded-xl mb-4 text-sm">
-            <div class="flex gap-2">
-                <button onclick="tutupModalReset()" class="flex-1 bg-slate-100 py-2 rounded-xl text-xs font-bold">Batal</button>
-                <button onclick="eksekusiResetPassword()" class="flex-1 bg-red-600 text-white py-2 rounded-xl text-xs font-bold">Update</button>
-            </div>
-        </div>
-    </div>
-
-    // Membuka modal reset untuk admin
-function bukaModalReset(userId) {
-    document.getElementById('reset-user-id').value = userId;
-    document.getElementById('modal-reset-password').classList.remove('hidden');
-}
-
-function tutupModalReset() {
-    document.getElementById('modal-reset-password').classList.add('hidden');
-}
-
-// Menjalankan RPC reset password
-async function eksekusiResetPassword() {
-    const userId = document.getElementById('reset-user-id').value;
-    const newPass = document.getElementById('new-password-field').value;
-
-    if (!newPass || newPass.length < 6) {
-        alert("Password minimal 6 karakter!");
-        return;
-    }
-
-    try {
-        const { error } = await supabase.rpc('reset_user_password_by_admin', { 
-            uid: userId, 
-            new_password: newPass 
-        });
-        
-        if (error) throw error;
-        alert("Password berhasil direset oleh Admin!");
-        tutupModalReset();
-    } catch (err) {
-        alert("Gagal reset: " + err.message);
-    }
-}
-    
     <script>
         const SUPABASE_URL = "https://uczqzarbuunjrkefdsdj.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_3jk79pXdGHa88negFx1TGw_z2JnHnrO"; 
@@ -426,17 +379,6 @@ async function eksekusiResetPassword() {
                         <h3 class="font-bold text-slate-900 text-sm">Wilujeng Sumping, ${profileData.nama}!</h3>
                         <p class="text-xs text-slate-500 mt-1">Jangan lupa berdoa sebelum memulai aktivitas di lapangan.</p>
                     </div>
-
-                    // Di dalam map tabel pada muatHalamanKontrolUser()
-                    <td class="px-3 py-3 text-center">
-                        <!-- Tombol Reset Password -->
-                        <button onclick="bukaModalReset('${u.id}')" class="bg-purple-600 text-white p-1 rounded hover:bg-purple-700 mr-1" title="Reset Password">
-                            <i class="fa-solid fa-key"></i>
-                        </button>
-                        <button onclick="simpanFinansialUser('${u.id}')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg">
-                            <i class="fa-solid fa-floppy-disk"></i> Simpan
-                        </button>
-                    </td>
                 `;
                 hitungDanMuatDashboard();
             }
