@@ -229,17 +229,21 @@
             } catch (err) { alert("Sistem Menolak: " + err.message); }
         }
         
-        async function handleForgotPassword(email) {
-          const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://aziz5729.github.io/Data-Arwana-V1/update-password.html', 
-          });
+        <input type="email" id="email-reset" placeholder="Masukkan email Anda">
+<button onclick="handleForgotPassword()">Kirim Link Reset</button>
 
-          if (error) {
-            alert("Error: " + error.message);
-          } else {
-            alert("Cek email Anda untuk link reset password.");
-          }
-        }
+<script>
+async function handleForgotPassword() {
+  const email = document.getElementById('email-reset').value;
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    // Arahkan langsung ke halaman yang sudah ada
+    redirectTo: 'https://aziz5729.github.io/Data-Arwana-V1/update-password.html',
+  });
+  
+  if (error) alert(error.message);
+  else alert("Cek email Anda!");
+}
+</script>
 
         async function updatePassword(newPassword) {
           const { data, error } = await supabase.auth.updateUser({
