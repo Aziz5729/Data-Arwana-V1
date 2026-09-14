@@ -95,6 +95,156 @@
         .dark .dark\:text-slate-400 { color: #94a3b8 !important; }
         .dark .dark\:border-slate-700 { border-color: #334155 !important; }
         .dark .dark\:border-slate-800 { border-color: #1e293b !important; }
+
+        /* ================= MOBILE-FIRST UX ================= */
+        html, body { width: 100%; min-height: 100%; overflow-x: hidden; }
+        button, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+        input, select, textarea { min-height: 44px; font-size: 16px !important; }
+        button { min-height: 44px; }
+        #content-area { overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
+        #mobile-bottom-nav { display: none; }
+        .mobile-only { display:none; }
+
+        @media (max-width: 1023px) {
+            body { padding-bottom: env(safe-area-inset-bottom); }
+            #main-app { min-height: 100dvh !important; height: 100dvh; }
+            #app-sidebar { width: min(82vw, 320px); }
+            #content-area { padding: 12px !important; padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
+            #main-app > main { height: 100dvh; min-height: 0; }
+            header { min-height: 60px; padding-top: max(10px, env(safe-area-inset-top)); }
+            header h2 { max-width: 55vw; font-size: 14px; }
+            #salary-badge { display: none !important; }
+            #theme-toggle { top: max(10px, env(safe-area-inset-top)); right: 10px; }
+            #theme-toggle { position: fixed; transform: scale(.9); }
+
+            /* Form cards */
+            #content-area > div > .grid,
+            #content-area .grid.grid-cols-1 { gap: 12px !important; }
+            #content-area .bg-white { border-radius: 16px !important; }
+            #content-area form { gap: 0; }
+            #content-area label { font-size: 10px !important; margin-bottom: 5px !important; }
+            #content-area input, #content-area select, #content-area textarea { width:100%; border-radius: 12px !important; }
+            #content-area textarea { min-height: 88px; }
+
+            /* Horizontal grids collapse cleanly */
+            #content-area .grid.grid-cols-2,
+            #content-area .grid.grid-cols-4 { grid-template-columns: 1fr !important; }
+            #content-area .grid.grid-cols-4 > .col-span-3 { grid-column: auto !important; }
+
+            /* Action bars */
+            #content-area .flex.items-center.gap-2 { flex-wrap: wrap; }
+            #content-area .flex.items-center.gap-2 > button,
+            #content-area .flex.flex-col.sm\:flex-row > button { min-height: 44px; }
+
+            /* Data tables become touch-friendly cards */
+            #content-area table { border-collapse: separate !important; border-spacing: 0 10px !important; width:100% !important; }
+            #content-area table thead { display:none !important; }
+            #content-area table tbody,
+            #content-area table tr,
+            #content-area table td { display:block !important; width:100% !important; }
+            #content-area table tbody tr {
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                box-shadow: var(--shadow-sm);
+                overflow:hidden;
+                padding: 7px 12px;
+                margin-bottom: 10px;
+            }
+            #content-area table td {
+                border:0 !important;
+                padding: 8px 0 !important;
+                white-space: normal !important;
+                text-align:right !important;
+                min-height: 36px;
+                display:flex !important;
+                align-items:center;
+                justify-content:space-between;
+                gap:12px;
+                font-size: 12px !important;
+            }
+            #content-area table td::before {
+                content: attr(data-label);
+                color: var(--text-muted);
+                font-size: 10px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing:.04em;
+                text-align:left;
+                flex: 0 0 42%;
+            }
+            #content-area table td:first-child { border-top:0 !important; }
+            #content-area table td:last-child { padding-bottom:10px !important; }
+            #content-area table td > * { max-width:58%; }
+            #content-area table td input,
+            #content-area table td select,
+            #content-area table td button { max-width:58%; min-height:40px; }
+            #content-area table td:has(input[type="checkbox"]) { justify-content:flex-start; }
+            #content-area table td:has(input[type="checkbox"])::before { flex:1; }
+
+            /* Hide non-essential horizontal-scroll wrappers on mobile */
+            #content-area .overflow-x-auto { overflow:visible !important; margin-left:0 !important; margin-right:0 !important; }
+            #content-area .overflow-x-auto > div { min-width:0 !important; width:100% !important; padding-left:0 !important; padding-right:0 !important; }
+
+            /* Bottom navigation */
+            #mobile-bottom-nav {
+                display:flex;
+                position:fixed;
+                left:0; right:0; bottom:0;
+                z-index:45;
+                min-height:64px;
+                padding:6px 8px max(6px, env(safe-area-inset-bottom));
+                background:rgba(255,255,255,.94);
+                border-top:1px solid var(--border-color);
+                backdrop-filter:blur(16px);
+                -webkit-backdrop-filter:blur(16px);
+                box-shadow:0 -6px 20px rgba(15,23,42,.08);
+                justify-content:space-around;
+                gap:4px;
+            }
+            .dark #mobile-bottom-nav { background:rgba(15,23,42,.94); }
+            #mobile-bottom-nav button {
+                flex:1;
+                min-width:0;
+                border-radius:14px;
+                color:var(--text-muted);
+                background:transparent;
+                display:flex;
+                flex-direction:column;
+                align-items:center;
+                justify-content:center;
+                gap:3px;
+                font-size:9px;
+                font-weight:700;
+                line-height:1.1;
+                padding:4px 2px;
+            }
+            #mobile-bottom-nav button i { font-size:16px; }
+            #mobile-bottom-nav button.active { color:#2563eb; background:#eff6ff; }
+            .dark #mobile-bottom-nav button.active { color:#60a5fa; background:#172554; }
+
+            /* Full-screen edit/image dialogs */
+            #modal-edit-universal { padding:0 !important; align-items:flex-end !important; }
+            #modal-edit-universal > div {
+                width:100% !important; max-width:none !important;
+                max-height:92dvh; overflow-y:auto;
+                border-radius:22px 22px 0 0 !important;
+                padding:16px !important;
+            }
+            #modal-edit-universal .flex.justify-end { position:sticky; bottom:0; background:var(--bg-secondary); padding-top:12px; }
+            #modal-edit-universal .flex.justify-end button { flex:1; }
+            #modal-image-preview { padding:10px !important; }
+            #modal-image-preview > div { border-radius:18px !important; padding:10px !important; }
+            #modal-image-preview img { max-height:82dvh !important; }
+
+            /* Larger, easier touch targets for photo uploads */
+            input[type="file"] { min-height:48px; padding:8px 4px; }
+            input[type="file"]::file-selector-button { min-height:36px; border-radius:10px; }
+        }
+
+        @media (min-width: 1024px) {
+            #mobile-bottom-nav { display:none !important; }
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-blue-500 selection:text-white">
@@ -192,7 +342,7 @@
     </div>
 
     <!-- Aplikasi Utama -->
-    <div id="main-app" class="hidden min-h-screen lg:flex relative bg-primary">
+    <div id="main-app" class="hidden min-h-screen flex relative bg-primary">
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden transition-opacity duration-300 opacity-0" onclick="toggleMobileSidebar()"></div>
         <aside id="app-sidebar" class="fixed inset-y-0 left-0 w-64 dark:bg-slate-900 bg-slate-900/95 text-slate-300 p-4 flex flex-col justify-between flex-shrink-0 z-50 transform -translate-x-full transition-transform duration-300 lg:translate-x-0 lg:static lg:h-screen glass">
             <div>
@@ -220,7 +370,7 @@
         <main class="flex-1 min-w-0 flex flex-col h-screen overflow-hidden">
             <header class="bg-secondary border-theme border-b px-4 lg:px-6 py-4 flex items-center justify-between flex-shrink-0 shadow-sm z-30">
                 <div class="flex items-center gap-3">
-                    <button onclick="toggleMobileSidebar()" class="bg-tertiary/50 hover:bg-tertiary text-secondary p-2.5 rounded-xl lg:hidden transition-all border-theme border active:scale-95">
+                    <button onclick="toggleMobileSidebar()" class="bg-tertiary/50 hover:bg-tertiary text-secondary p-2.5 rounded-xl lg:hidden transition-all border-theme border active:scale-95" title="Buka Menu">
                         <i class="fa-solid fa-bars text-sm"></i>
                     </button>
                     <h2 class="text-base font-bold text-primary truncate" id="current-menu-title">Dashboard</h2>
@@ -236,6 +386,9 @@
             <div class="p-4 lg:p-6 overflow-y-auto flex-1 bg-primary custom-scroll" id="content-area"></div>
         </main>
     </div>
+
+    <!-- Navigasi bawah khusus HP -->
+    <nav id="mobile-bottom-nav" aria-label="Navigasi utama mobile"></nav>
 
     <!-- Modal Edit Universal -->
     <div id="modal-edit-universal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm items-center justify-center p-4 hidden flex">
@@ -483,8 +636,52 @@
                     }
                 }
                 renderSidebarMenu();
+                renderMobileBottomNav();
+                setupMobileUX();
                 pindahMenu('dashboard');
             } catch (err) { alert("Error Profiling: " + err.message); }
+        }
+
+
+        function setupMobileUX() {
+            const content = document.getElementById('content-area');
+            if (!content || content.dataset.mobileUxReady) return;
+            content.dataset.mobileUxReady = '1';
+
+            const labelTables = () => {
+                content.querySelectorAll('table').forEach(table => {
+                    const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.innerText.trim());
+                    table.querySelectorAll('tbody tr').forEach(row => {
+                        Array.from(row.children).forEach((td, i) => {
+                            if (!td.dataset.label && headers[i]) td.dataset.label = headers[i];
+                        });
+                    });
+                });
+            };
+            new MutationObserver(labelTables).observe(content, {childList:true, subtree:true});
+            labelTables();
+        }
+
+        function renderMobileBottomNav() {
+            const nav = document.getElementById('mobile-bottom-nav');
+            if (!nav || !profileData) return;
+            const userMenus = baseMenus.filter(m => m.role === 'all' || m.role === profileData.role);
+            const preferred = ['dashboard','absensi','ops','progres_node_b'];
+            let items = preferred.map(id => userMenus.find(m => m.id === id)).filter(Boolean);
+            const other = userMenus.find(m => !items.some(x => x.id === m.id));
+            if (other) items.push(other);
+            items = items.slice(0,5);
+            nav.innerHTML = items.map(m => `
+                <button type="button" id="mobile-nav-${m.id}" onclick="pindahMenu('${m.id}')">
+                    <i class="fa-solid ${m.icon}"></i><span>${m.name.replace(' Team','').replace(' Node-B','')}</span>
+                </button>`).join('');
+            updateMobileBottomNav();
+        }
+
+        function updateMobileBottomNav() {
+            document.querySelectorAll('#mobile-bottom-nav button').forEach(btn => btn.classList.remove('active'));
+            const active = document.getElementById(`mobile-nav-${menuAktifSaatIni}`);
+            if (active) active.classList.add('active');
         }
 
         function renderSidebarMenu() {
@@ -511,6 +708,7 @@
             });
             const actBtn = document.getElementById(`menu-btn-${menuId}`);
             if (actBtn) actBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+            updateMobileBottomNav();
             
             const titleElem = document.getElementById('current-menu-title');
             if (titleElem) titleElem.innerText = targetMenu.name;
@@ -924,7 +1122,7 @@
                                 </div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nominal (Rp)</label><input type="number" id="toll-nominal" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan / Site ID</label><input type="text" id="toll-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Perjalanan ke site JKT01"></div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Struk</label><input type="file" id="toll-foto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Struk</label><input type="file" id="toll-foto" accept="image/*" capture="environment" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
                                 <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Struk</button>
                             </form>
                         </div>
@@ -970,7 +1168,7 @@
                                 </div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Biaya (Rp)</label><input type="number" id="maint-biaya" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="0"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Perbaikan</label><textarea id="maint-ket" required class="w-full px-3 py-2 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Ganti Oli & Kampas Rem"></textarea></div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Servis</label><input type="file" id="maint-foto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Servis</label><input type="file" id="maint-foto" accept="image/*" capture="environment" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
                                 <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Data</button>
                             </form>
                         </div>
@@ -1013,7 +1211,7 @@
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal Bayar</label><input type="date" id="pajak-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Total Nilai Pajak (Rp)</label><input type="number" id="pajak-biaya" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="0"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Kendaraan</label><input type="text" id="pajak-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Pajak Tahunan Mobil Avanza"></div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Faktur</label><input type="file" id="pajak-foto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Faktur</label><input type="file" id="pajak-foto" accept="image/*" capture="environment" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
                                 <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Faktur Pajak</button>
                             </form>
                         </div>
@@ -1435,33 +1633,46 @@
             } catch (err) { console.error("Dash error:", err.message); }
         }
 
-        function renderFormAbsen() {
+        async function renderFormAbsen() {
             const form = document.getElementById('form-absensi');
             if (!form) return;
+            const isAdmin = profileData?.role === 'admin';
+            let opsiUser = '';
+            if (isAdmin) {
+                const { data, error } = await supabase.from('profiles').select('id, nama').order('nama');
+                if (error) { console.error(error.message); }
+                opsiUser = `<div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Pilih User</label><select id="absen-user-id" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"><option value="">-- Pilih User --</option>${(data || []).map(d => `<option value="${d.id}">${d.nama}</option>`).join('')}</select></div>`;
+            }
             form.innerHTML = `
-                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal Hari Ini</label><input type="date" id="absen-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                <div>
-                    <label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Line Progres / Lokasi</label>
-                    <select id="absen-line" onchange="toggleInputManualLokasi(this.value)" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500">
-                        <option value="Node-B">Node-B</option>
-                        <option value="Revitalisasi">Revitalisasi</option>
-                        <option value="MTN">MTN</option>
-                        <option value="Xenith">Xenith</option>
-                        <option value="Other">Other</option>
-                        <option value="MANUAL">Input secara manual</option>
-                    </select>
-                </div>
-                <div id="container-lokasi-manual" class="hidden">
-                    <label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tulis Lokasi Manual</label>
-                    <input type="text" id="absen-lokasi-manual" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Ketik nama lokasi/site di sini...">
-                </div>
-                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Status Kehadiran</label><select id="absen-status" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"><option value="Hadir">Hadir Kerja</option><option value="Absen">Absen / Izin</option></select></div>
-                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Aktivitas</label><input type="text" id="absen-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Preventif site BDG01"></div>
-                <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Kirim Absensi Saya</button>
-            `;
-            const tglInput = document.getElementById('absen-tgl');
-            if(tglInput) tglInput.valueAsDate = new Date();
-            form.addEventListener('submit', simpanAbsenUser);
+                ${opsiUser}
+                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal ${isAdmin ? 'Absensi' : 'Hari Ini'}</label><input type="date" id="absen-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Line Progres / Lokasi</label><select id="absen-line" onchange="toggleInputManualLokasi(this.value)" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs"><option value="Node-B">Node-B</option><option value="Node-A">Node-A</option><option value="MANUAL">Tulis Lokasi Manual</option></select></div>
+                <div id="container-lokasi-manual" class="hidden"><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tulis Lokasi Manual</label><input type="text" id="absen-lokasi-manual" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs" placeholder="Ketik nama lokasi/site di sini..."></div>
+                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Status Kehadiran</label><select id="absen-status" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs"><option value="Hadir">Hadir Kerja</option><option value="Absen">Absen / Izin</option></select></div>
+                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Aktivitas</label><input type="text" id="absen-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs" placeholder="Preventif site BDG01"></div>
+                <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">${isAdmin ? 'Simpan Absensi User' : 'Kirim Absensi Saya'}</button>`;
+            document.getElementById('absen-tgl').valueAsDate = new Date();
+            form.onsubmit = isAdmin ? simpanAbsenAdmin : simpanAbsenUser;
+        }
+
+        async function simpanAbsenAdmin(e) {
+            e.preventDefault();
+            try {
+                const uid = document.getElementById('absen-user-id').value;
+                const tgl = document.getElementById('absen-tgl').value;
+                if (!uid) return alert('Pilih user terlebih dahulu.');
+                const { data: prof, error: pe } = await supabase.from('profiles').select('nama').eq('id', uid).single();
+                if (pe) throw pe;
+                let lokasi = document.getElementById('absen-line').value;
+                if (lokasi === 'MANUAL') lokasi = document.getElementById('absen-lokasi-manual').value.trim();
+                const { data: existing, error: ce } = await supabase.from('absensi').select('id').eq('user_id', uid).eq('tanggal', tgl).maybeSingle();
+                if (ce) throw ce;
+                if (existing) return alert('User tersebut sudah memiliki absensi pada tanggal ini.');
+                const { error } = await supabase.from('absensi').insert([{ user_id: uid, nama_user: prof.nama, tanggal: tgl, line_progres: lokasi, status_hadir: document.getElementById('absen-status').value, keterangan: document.getElementById('absen-ket').value }]);
+                if (error) throw error;
+                alert('Absensi user berhasil disimpan oleh admin!');
+                refreshMenuAktif();
+            } catch (err) { alert('Gagal input absensi admin: ' + err.message); }
         }
 
         function toggleInputManualLokasi(nilai) {
