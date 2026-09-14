@@ -186,6 +186,33 @@
             #content-area .overflow-x-auto { overflow:visible !important; margin-left:0 !important; margin-right:0 !important; }
             #content-area .overflow-x-auto > div { min-width:0 !important; width:100% !important; padding-left:0 !important; padding-right:0 !important; }
 
+            /* Tombol Logout tetap / independen: berlaku untuk Admin dan User */
+            #mobile-logout-fixed {
+                display:flex !important;
+                position:fixed;
+                right:12px;
+                bottom:calc(76px + env(safe-area-inset-bottom));
+                z-index:60;
+                min-height:46px;
+                padding:8px 14px;
+                border:1px solid #fecaca;
+                border-radius:14px;
+                background:#fff1f2;
+                color:#dc2626;
+                box-shadow:0 6px 20px rgba(15,23,42,.15);
+                align-items:center;
+                justify-content:center;
+                gap:7px;
+                font-size:11px;
+                font-weight:800;
+            }
+            #mobile-logout-fixed i { font-size:15px; }
+            .dark #mobile-logout-fixed {
+                background:#450a0a;
+                border-color:#7f1d1d;
+                color:#fca5a5;
+            }
+
             /* Bottom navigation */
             #mobile-bottom-nav {
                 display:flex;
@@ -244,6 +271,7 @@
 
         @media (min-width: 1024px) {
             #mobile-bottom-nav { display:none !important; }
+            #mobile-logout-fixed { display:none !important; }
         }
     </style>
 </head>
@@ -389,6 +417,12 @@
 
     <!-- Navigasi bawah khusus HP -->
     <nav id="mobile-bottom-nav" aria-label="Navigasi utama mobile"></nav>
+
+    <!-- Logout HP: tombol berdiri sendiri agar selalu tampil untuk ADMIN maupun USER -->
+    <button id="mobile-logout-fixed" type="button" onclick="handleLogout()" aria-label="Keluar Sistem">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span>Keluar</span>
+    </button>
 
     <!-- Modal Edit Universal -->
     <div id="modal-edit-universal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm items-center justify-center p-4 hidden flex">
@@ -674,10 +708,7 @@
             nav.innerHTML = items.map(m => `
                 <button type="button" id="mobile-nav-${m.id}" onclick="pindahMenu('${m.id}')">
                     <i class="fa-solid ${m.icon}"></i><span>${m.name.replace(' Team','').replace(' Node-B','')}</span>
-                </button>`).join('') + `
-                <button type="button" id="mobile-nav-logout" onclick="handleLogout()" class="mobile-logout-btn" aria-label="Keluar Sistem">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i><span>Keluar</span>
-                </button>`;
+                </button>`).join('');
             updateMobileBottomNav();
         }
 
