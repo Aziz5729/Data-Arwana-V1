@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,188 +10,307 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap');
+        
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .dark {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --border-color: #334155;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f8fafc; 
+            background-color: var(--bg-primary); 
+            color: var(--text-primary);
             -webkit-tap-highlight-color: transparent;
         }
-        .fade-in { animation: fadeIn 0.2s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
         
-        .custom-scroll::-webkit-scrollbar { height: 4px; width: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .bg-primary { background-color: var(--bg-primary); }
+        .bg-secondary { background-color: var(--bg-secondary); }
+        .bg-tertiary { background-color: var(--bg-tertiary); }
+        .text-primary { color: var(--text-primary); }
+        .text-secondary { color: var(--text-secondary); }
+        .text-muted { color: var(--text-muted); }
+        .border-theme { border-color: var(--border-color); }
+        .shadow-sm { box-shadow: var(--shadow-sm); }
+        .shadow-md { box-shadow: var(--shadow-md); }
+        .shadow-lg { box-shadow: var(--shadow-lg); }
+        .shadow-xl { box-shadow: var(--shadow-xl); }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(8px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .custom-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { 
+            background: var(--border-color); 
+            border-radius: 10px; 
+        }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        
+        .glass {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+        }
+        
+        .dark .dark\:bg-slate-900 { background-color: #0f172a !important; }
+        .dark .dark\:bg-slate-800 { background-color: #1e293b !important; }
+        .dark .dark\:bg-slate-700 { background-color: #334155 !important; }
+        .dark .dark\:text-slate-200 { color: #e2e8f0 !important; }
+        .dark .dark\:text-slate-300 { color: #cbd5e1 !important; }
+        .dark .dark\:text-slate-400 { color: #94a3b8 !important; }
+        .dark .dark\:border-slate-700 { border-color: #334155 !important; }
+        .dark .dark\:border-slate-800 { border-color: #1e293b !important; }
     </style>
 </head>
-<body class="text-slate-800 antialiased selection:bg-blue-500 selection:text-white">
+<body class="antialiased selection:bg-blue-500 selection:text-white">
+    <!-- Tombol Pengalih Tema -->
+    <button id="theme-toggle" class="fixed top-4 right-4 z-50 p-3 rounded-full bg-secondary border-theme border shadow-md hover:shadow-lg transition-all duration-300 group">
+        <i class="fa-solid fa-moon text-amber-500 group-hover:scale-110 transition-transform" id="theme-icon"></i>
+    </button>
 
-    <div id="auth-page" class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100 fade-in">
-            <div class="text-center mb-6">
-                <div class="bg-blue-600 text-white w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-bold shadow-lg shadow-blue-200 mb-3">
+    <div id="auth-page" class="min-h-screen flex items-center justify-center p-4 bg-primary">
+        <div class="bg-secondary p-6 sm:p-8 rounded-3xl shadow-xl w-full max-w-md border-theme border fade-in">
+            <div class="text-center mb-8">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-700 text-white w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-lg shadow-blue-200/50 dark:shadow-blue-900/30 mb-4">
                     <i class="fa-solid fa-tower-cell"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-slate-900" id="auth-title">ARWANA SYNERGY</h2>
-                <p class="text-slate-500 text-xs mt-1">Sistem Kontrol Data Arwana Synergy</p>
+                <h2 class="text-2xl font-bold text-primary" id="auth-title">ARWANA SYNERGY</h2>
+                <p class="text-muted text-sm mt-2">Sistem Manajemen Lapangan Telekomunikasi</p>
             </div>
             
             <form id="auth-form" class="space-y-4">
                 <div id="register-fields" class="hidden">
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Nama Lengkap</label>
-                    <input type="text" id="auth-nama" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-blue-500">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-2">Nama Lengkap</label>
+                    <input type="text" id="auth-nama" class="w-full px-4 py-3 rounded-xl border-theme border bg-tertiary/50 text-primary text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Email Address</label>
-                    <input type="email" id="auth-email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-blue-500">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-2">Email Address</label>
+                    <input type="email" id="auth-email" required="" 
+  class="w-full px-4 py-3 rounded-xl border-theme border bg-tertiary text-primary text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+  style="color: #ffffff !important; background-color: #2a3b5c !important;">
                 </div>
                 <div id="password-field">
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
-                    <input type="password" id="auth-password" required minlength="6" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-blue-500" placeholder="Minimal 6 karakter">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-2">Password</label>
+                    <input type="password" id="auth-password" required="" minlength="6" 
+  class="w-full px-4 py-3 rounded-xl border-theme border bg-tertiary text-primary text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" 
+  placeholder="Minimal 6 karakter">
                 </div>
-                <button type="submit" id="auth-submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg mt-2 text-sm active:scale-[0.99]">Masuk</button>
+                <button type="submit" id="auth-submit-btn" class="w-full btn-primary text-white font-semibold py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-blue-200/50 dark:shadow-blue-900/30 mt-4 text-sm active:scale-[0.98] hover:scale-[1.01]">Masuk</button>
             </form>
             
-            <div class="text-center mt-6 text-xs text-slate-600 space-y-2">
-                <button id="toggle-auth" type="button" class="text-blue-600 font-semibold hover:underline">Belum punya akun? Daftar disini</button>
-		<br>
-                <button id="toggle-forgot-password" type="button" class="text-amber-600 font-semibold hover:underline">Lupa Password?</button>
+            <div class="text-center mt-8 text-sm space-y-3">
+                <button id="toggle-auth" type="button" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline transition-colors">Belum punya akun? Daftar disini</button>
+                <br>
+                <button id="toggle-forgot-password" type="button" class="text-amber-600 dark:text-amber-400 font-semibold hover:underline transition-colors">Lupa Password?</button>
             </div>
         </div>
     </div>
 
     <!-- Halaman Lupa Password -->
-    <div id="forgot-password-page" class="min-h-screen flex items-center justify-center p-4 hidden">
-        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100 fade-in">
-            <div class="text-center mb-6">
-                <div class="bg-amber-500 text-white w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-bold shadow-lg shadow-amber-200 mb-3">
+    <div id="forgot-password-page" class="min-h-screen flex items-center justify-center p-4 bg-primary hidden">
+        <div class="bg-secondary p-6 sm:p-8 rounded-3xl shadow-xl w-full max-w-md border-theme border fade-in">
+            <div class="text-center mb-8">
+                <div class="bg-gradient-to-br from-amber-500 to-amber-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-lg shadow-amber-200/50 dark:shadow-amber-900/30 mb-4">
                     <i class="fa-solid fa-key"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-slate-900">Lupa Password</h2>
-                <p class="text-slate-500 text-xs mt-1">Masukkan email Anda untuk menerima tautan reset password</p>
+                <h2 class="text-2xl font-bold text-primary">Lupa Password</h2>
+                <p class="text-muted text-sm mt-2">Masukkan email Anda untuk menerima tautan reset password</p>
             </div>
             
             <form id="forgot-password-form" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Email Terdaftar</label>
-                    <input type="email" id="forgot-email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-amber-500">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-2">Email Terdaftar</label>
+                    <input type="email" id="forgot-email" required class="w-full px-4 py-3 rounded-xl border-theme border bg-tertiary/50 text-primary text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
                 </div>
-                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg mt-2 text-sm active:scale-[0.99]">Kirim Tautan Reset</button>
+                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-amber-200/50 dark:shadow-amber-900/30 mt-4 text-sm active:scale-[0.98]">Kirim Tautan Reset</button>
             </form>
             
-            <div class="text-center mt-6 text-xs text-slate-600">
-                <button id="back-to-login" type="button" class="text-blue-600 font-semibold hover:underline">Kembali ke Halaman Masuk</button>
+            <div class="text-center mt-8 text-sm">
+                <button id="back-to-login" type="button" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline transition-colors">← Kembali ke Halaman Masuk</button>
             </div>
         </div>
     </div>
 
-    <!-- Halaman Reset Password (dari tautan email) -->
-    <div id="reset-password-page" class="min-h-screen flex items-center justify-center p-4 hidden">
-        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100 fade-in">
-            <div class="text-center mb-6">
-                <div class="bg-green-600 text-white w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-bold shadow-lg shadow-green-200 mb-3">
+    <!-- Halaman Reset Password -->
+    <div id="reset-password-page" class="min-h-screen flex items-center justify-center p-4 bg-primary hidden">
+        <div class="bg-secondary p-6 sm:p-8 rounded-3xl shadow-xl w-full max-w-md border-theme border fade-in">
+            <div class="text-center mb-8">
+                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/30 mb-4">
                     <i class="fa-solid fa-lock"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-slate-900">Buat Password Baru</h2>
-                <p class="text-slate-500 text-xs mt-1">Masukkan password baru untuk akun Anda</p>
+                <h2 class="text-2xl font-bold text-primary">Buat Password Baru</h2>
+                <p class="text-muted text-sm mt-2">Masukkan password baru untuk akun Anda</p>
             </div>
             
             <form id="reset-password-form" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password Baru</label>
-                    <input type="password" id="new-password" required minlength="6" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-green-500" placeholder="Minimal 6 karakter">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-2">Password Baru</label>
+                    <input type="password" id="new-password" required minlength="6" class="w-full px-4 py-3 rounded-xl border-theme border bg-tertiary/50 text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all" placeholder="Minimal 6 karakter">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Konfirmasi Password Baru</label>
-                    <input type="password" id="confirm-new-password" required minlength="6" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-green-500" placeholder="Ulangi password baru">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-secondary mb-2">Konfirmasi Password Baru</label>
+                    <input type="password" id="confirm-new-password" required minlength="6" class="w-full px-4 py-3 rounded-xl border-theme border bg-tertiary/50 text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all" placeholder="Ulangi password baru">
                 </div>
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg mt-2 text-sm active:scale-[0.99]">Simpan Password Baru</button>
+                <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/30 mt-4 text-sm active:scale-[0.98]">Simpan Password Baru</button>
             </form>
         </div>
     </div>
 
-    <div id="main-app" class="hidden min-h-screen lg:flex relative">
-        
-        <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden lg:hidden transition-opacity duration-300 opacity-0" onclick="toggleMobileSidebar()"></div>
-
-        <aside id="app-sidebar" class="fixed inset-y-0 left-0 w-64 bg-slate-900 text-slate-400 p-4 flex flex-col justify-between flex-shrink-0 z-50 transform -translate-x-full transition-transform duration-300 lg:translate-x-0 lg:static lg:h-screen">
+    <!-- Aplikasi Utama -->
+    <div id="main-app" class="hidden min-h-screen lg:flex relative bg-primary">
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden transition-opacity duration-300 opacity-0" onclick="toggleMobileSidebar()"></div>
+        <aside id="app-sidebar" class="fixed inset-y-0 left-0 w-64 dark:bg-slate-900 bg-slate-900/95 text-slate-300 p-4 flex flex-col justify-between flex-shrink-0 z-50 transform -translate-x-full transition-transform duration-300 lg:translate-x-0 lg:static lg:h-screen glass">
             <div>
-                <div class="flex items-center justify-between px-2 py-4 mb-4 border-b border-slate-800">
+                <div class="flex items-center justify-between px-2 py-4 mb-6 border-b dark:border-slate-800 border-slate-800/50">
                     <div class="flex items-center gap-3">
-                        <div class="bg-blue-600 text-white p-2 rounded-lg"><i class="fa-solid fa-hard-drive"></i></div>
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-2.5 rounded-xl shadow-lg shadow-blue-900/20"><i class="fa-solid fa-hard-drive"></i></div>
                         <div>
                             <h1 class="text-white font-bold text-sm leading-tight max-w-[130px] truncate" id="user-display-name">Memuat...</h1>
-                            <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-blue-400 font-bold" id="user-display-role">USER</span>
+                            <span class="text-[10px] bg-blue-900/40 px-2 py-0.5 rounded text-blue-300 font-bold" id="user-display-role">USER</span>
                         </div>
                     </div>
-                    <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white lg:hidden p-2">
+                    <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white lg:hidden p-2 rounded-lg hover:bg-slate-800 transition-colors">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
-                <nav class="space-y-1" id="sidebar-menu"></nav>
+                <nav class="space-y-1.5" id="sidebar-menu"></nav>
             </div>
-            <div class="pt-4 border-t border-slate-800">
-                <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-950/30 font-medium text-sm transition active:scale-[0.98]">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar Sistem
+            <div class="pt-4 border-t dark:border-slate-800 border-slate-800/50 mt-4">
+                <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-950/40 font-medium text-sm transition-all duration-200 group">
+                    <i class="fa-solid fa-arrow-right-from-bracket group-hover:translate-x-0.5 transition-transform"></i> Keluar Sistem
                 </button>
             </div>
         </aside>
 
         <main class="flex-1 min-w-0 flex flex-col h-screen overflow-hidden">
-            <header class="bg-white border-b border-slate-100 px-4 lg:px-6 py-3.5 flex items-center justify-between flex-shrink-0 shadow-sm z-30">
-                <div class="flex items-center gap-2.5">
-                    <button onclick="toggleMobileSidebar()" class="bg-slate-50 hover:bg-slate-100 text-slate-700 p-2.5 rounded-xl lg:hidden transition border border-slate-200 active:scale-95">
+            <header class="bg-secondary border-theme border-b px-4 lg:px-6 py-4 flex items-center justify-between flex-shrink-0 shadow-sm z-30">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleMobileSidebar()" class="bg-tertiary/50 hover:bg-tertiary text-secondary p-2.5 rounded-xl lg:hidden transition-all border-theme border active:scale-95">
                         <i class="fa-solid fa-bars text-sm"></i>
                     </button>
-                    <h2 class="text-base font-bold text-slate-900 truncate" id="current-menu-title">Dashboard</h2>
+                    <h2 class="text-base font-bold text-primary truncate" id="current-menu-title">Dashboard</h2>
                 </div>
-                <div class="flex items-center gap-2.5">
-                    <span id="salary-badge" class="text-[10px] sm:text-xs bg-emerald-50 text-emerald-700 px-2.5 py-1.5 rounded-full font-bold border border-emerald-100 hidden"></span>
-                    
-                    <button onclick="refreshMenuAktif()" class="bg-slate-50 text-slate-600 border border-slate-200 p-2.5 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition active:scale-95" title="Refresh Data">
+                <div class="flex items-center gap-3">
+                    <span id="salary-badge" class="text-[10px] sm:text-xs bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-3 py-1.5 rounded-full font-bold border border-emerald-100 dark:border-emerald-900/30 hidden">
+                    </span>
+                    <button onclick="refreshMenuAktif()" class="bg-tertiary/50 text-secondary border-theme border p-2.5 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-95" title="Refresh Data">
                         <i class="fa-solid fa-arrows-rotate text-sm"></i>
                     </button>
                 </div>
             </header>
-
-            <div class="p-4 lg:p-6 overflow-y-auto flex-1 bg-slate-50 custom-scroll" id="content-area"></div>
+            <div class="p-4 lg:p-6 overflow-y-auto flex-1 bg-primary custom-scroll" id="content-area"></div>
         </main>
     </div>
 
-    <div id="modal-edit-universal" class="fixed inset-0 z-50 bg-slate-900/60 items-center justify-center p-4 hidden flex">
-        <div class="bg-white rounded-2xl shadow-2xl border w-full max-w-lg p-5 sm:p-6 fade-in">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider" id="modal-edit-title">Edit Data Lapangan</h3>
-                <button onclick="tutupModalEdit()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-base"></i></button>
+    <!-- Modal Edit Universal -->
+    <div id="modal-edit-universal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm items-center justify-center p-4 hidden flex">
+        <div class="bg-secondary rounded-3xl shadow-2xl border-theme border w-full max-w-lg p-5 sm:p-6 fade-in">
+            <div class="flex justify-between items-center border-theme border-b pb-4 mb-5">
+                <h3 class="font-bold text-primary text-sm uppercase tracking-wider" id="modal-edit-title">Edit Data</h3>
+                <button onclick="tutupModalEdit()" class="text-muted hover:text-secondary transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="form-edit-universal" class="space-y-4">
                 <input type="hidden" id="edit-id-target">
                 <input type="hidden" id="edit-tabel-target">
-                <div id="modal-edit-fields" class="space-y-3"></div>
-                <div class="flex justify-end gap-2 pt-2 border-t mt-4">
-                    <button type="button" onclick="tutupModalEdit()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl">Batal</button>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow shadow-blue-200">Simpan Perubahan</button>
+                <div id="modal-edit-fields" class="space-y-4"></div>
+                <div class="flex justify-end gap-3 pt-4 border-theme border-t mt-2">
+                    <button type="button" onclick="tutupModalEdit()" class="bg-tertiary hover:bg-tertiary/80 text-secondary font-bold text-xs px-4 py-2.5 rounded-xl transition-colors">Batal</button>
+                    <button type="submit" class="btn-primary text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal Gambar/Foto Preview -->
-    <div id="modal-image-preview" class="fixed inset-0 z-50 bg-slate-900/80 items-center justify-center p-4 hidden flex" onclick="tutupModalFoto()">
-        <div class="bg-white rounded-2xl p-3 max-w-2xl w-full fade-in relative" onclick="event.stopPropagation()">
-            <button onclick="tutupModalFoto()" class="absolute -top-10 right-0 text-white hover:text-slate-200 text-lg"><i class="fa-solid fa-xmark"></i> Tutup</button>
-            <img id="img-preview-target" src="" class="w-full h-auto max-h-[80vh] object-contain rounded-xl" alt="Preview Bukti">
+    <!-- Modal Preview Gambar -->
+    <div id="modal-image-preview" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-4 hidden flex" onclick="tutupModalFoto()">
+        <div class="bg-secondary rounded-3xl p-4 max-w-2xl w-full fade-in relative" onclick="event.stopPropagation()">
+            <button onclick="tutupModalFoto()" class="absolute -top-12 right-0 text-white hover:text-slate-300 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-xmark"></i> Tutup
+            </button>
+            <img id="img-preview-target" src="" class="w-full h-auto max-h-[80vh] object-contain rounded-2xl" alt="Preview Bukti">
         </div>
     </div>
 
     <script>
+        // ===== PENGATURAN TEMA =====
+        const htmlElement = document.documentElement;
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        
+        // Muat tema tersimpan
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+        }
+        
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                htmlElement.classList.remove('light');
+                htmlElement.classList.add('dark');
+                themeIcon.classList.remove('fa-moon', 'text-amber-500');
+                themeIcon.classList.add('fa-sun', 'text-yellow-400');
+            } else {
+                htmlElement.classList.remove('dark');
+                htmlElement.classList.add('light');
+                themeIcon.classList.remove('fa-sun', 'text-yellow-400');
+                themeIcon.classList.add('fa-moon', 'text-amber-500');
+            }
+            localStorage.setItem('theme', theme);
+        }
+        
+        function toggleTheme() {
+            const isDark = htmlElement.classList.contains('dark');
+            setTheme(isDark ? 'light' : 'dark');
+        }
+        
+        // Inisialisasi tema
+        loadTheme();
+        themeToggle.addEventListener('click', toggleTheme);
+
+        // ===== KONFIGURASI SUPABASE =====
         const SUPABASE_URL = "https://uczqzarbuunjrkefdsdj.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_3jk79pXdGHa88negFx1TGw_z2JnHnrO"; 
-
         let supabase = null;
         let currentUser = null;
         let profileData = null;
         let isRegisterMode = false;
         let menuAktifSaatIni = 'dashboard';
-
+        
         const baseMenus = [
             { id: 'dashboard', name: 'Dashboard', icon: 'fa-chart-pie', role: 'all' },
             { id: 'kontrol_user', name: 'Kontrol User (ACC/Gaji)', icon: 'fa-users-gear', role: 'admin' },
@@ -207,15 +326,10 @@
             { id: 'laporan', name: 'Laporan Akhir (Download Excel)', icon: 'fa-file-excel', role: 'admin' } 
         ];
 
-        let cacheAbsensi = [];
-        let cacheOperasional = [];
-        let cacheKasbon = [];
-        let cacheMaterialNodeB = [];
-        let cacheProgresNodeB = [];
-        let cacheTollBensin = [];
-        let cacheMaintenance = [];
-        let cacheFakturPajak = [];
-        let cacheDataLaporanMatriks = [];
+        // Cache data
+        let cacheAbsensi = [], cacheOperasional = [], cacheKasbon = [], 
+            cacheMaterialNodeB = [], cacheProgresNodeB = [], cacheTollBensin = [],
+            cacheMaintenance = [], cacheFakturPajak = [], cacheDataLaporanMatriks = [];
 
         window.addEventListener('DOMContentLoaded', () => {
             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -225,9 +339,8 @@
         });
 
         // ======================================
-        // FUNGSI BARU: LUPA & RESET PASSWORD
+        // FUNGSI LUPA & RESET PASSWORD
         // ======================================
-
         function periksaParameterResetPassword() {
             const hash = window.location.hash;
             if (hash.includes('type=recovery')) {
@@ -236,7 +349,7 @@
                 document.getElementById('reset-password-page').classList.remove('hidden');
             }
         }
-
+        
         async function prosesLupaPassword(e) {
             e.preventDefault();
             const email = document.getElementById('forgot-email').value.trim();
@@ -245,35 +358,33 @@
                     redirectTo: window.location.origin + window.location.pathname
                 });
                 if (error) throw error;
-                alert("Tautan reset password telah dikirim ke email Anda. Silakan cek kotak masuk atau folder spam.");
+                alert("✅ Tautan reset password telah dikirim ke email Anda. Silakan cek kotak masuk atau folder spam.");
                 document.getElementById('forgot-password-form').reset();
             } catch (err) {
-                alert("Gagal mengirim tautan: " + err.message);
+                alert("❌ Gagal mengirim tautan: " + err.message);
             }
         }
-
+        
         async function prosesResetPassword(e) {
             e.preventDefault();
             const passBaru = document.getElementById('new-password').value;
             const passKonfirm = document.getElementById('confirm-new-password').value;
-
             if (passBaru !== passKonfirm) {
-                alert("Password baru dan konfirmasi tidak cocok!");
+                alert("⚠️ Password baru dan konfirmasi tidak cocok!");
                 return;
             }
             if (passBaru.length < 6) {
-                alert("Password minimal 6 karakter!");
+                alert("⚠️ Password minimal 6 karakter!");
                 return;
             }
-
             try {
                 const { error } = await supabase.auth.updateUser({ password: passBaru });
                 if (error) throw error;
-                alert("Password berhasil diperbarui! Anda akan diarahkan ke halaman login.");
+                alert("✅ Password berhasil diperbarui! Anda akan diarahkan ke halaman login.");
                 window.location.hash = '';
                 window.location.reload();
             } catch (err) {
-                alert("Gagal memperbarui password: " + err.message);
+                alert("❌ Gagal memperbarui password: " + err.message);
             }
         }
 
@@ -615,13 +726,22 @@
                         </div>
                     </div>
                     <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-100 shadow-sm mt-5">
-                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
-                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900">Arus Kas Terpadu</h3>
-                            <div class="flex items-center gap-2">
-                                ${isAdmin ? `<button onclick="hapusDataTerpilih('operasional', 'cb-ops')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition"><i class="fa-solid fa-trash-can"></i> Hapus Terpilih</button>` : ''}
-                                <button onclick="unduhExcelSpesifik('Operasional', cacheOperasional)" class="bg-emerald-600 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1 active:scale-95"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
+                            <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-3 mb-4">
+                                <div>
+                                    <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900">Arus Kas Terpadu</h3>
+                                    <p id="ops-filter-info" class="text-[10px] text-slate-400 mt-1">Menampilkan semua User PIC</p>
+                                </div>
+                                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <label for="ops-filter-pic" class="text-[10px] font-bold text-slate-500 uppercase whitespace-nowrap">Filter User PIC</label>
+                                        <select id="ops-filter-pic" onchange="filterOpsByPIC(this.value)" class="px-3 py-2 border border-slate-200 rounded-xl bg-slate-50 text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 min-w-[160px]">
+                                            <option value="">Semua User PIC</option>
+                                        </select>
+                                    </div>
+                                    ${isAdmin ? `<button onclick="hapusDataTerpilih('operasional', 'cb-ops')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition"><i class="fa-solid fa-trash-can"></i> Hapus Terpilih</button>` : ''}
+                                    <button onclick="unduhExcelSpesifik('Operasional', cacheOperasional)" class="bg-emerald-600 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1 active:scale-95"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
+                                </div>
                             </div>
-                        </div>
                         <div class="overflow-x-auto custom-scroll -mx-4 sm:mx-0">
                             <div class="inline-block min-w-full align-middle px-4 sm:px-0">
                                 <table class="min-w-full text-left text-xs whitespace-nowrap">
@@ -1472,45 +1592,134 @@
             } catch (err) { alert("Gagal input kas keluar: " + err.message); }
         }
 
+        // ==================== FILTER OPERASIONAL BERDASARKAN USER PIC ====================
+        let opsPICTerpilih = '';
+
+        function escapeHtmlOps(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function isiFilterOpsPIC(data) {
+            const select = document.getElementById('ops-filter-pic');
+            if (!select) return;
+
+            const picList = [...new Set(
+                (data || [])
+                    .map(d => (d.nama_user || '').trim())
+                    .filter(Boolean)
+            )].sort((a, b) => a.localeCompare(b, 'id'));
+
+            const nilaiLama = opsPICTerpilih;
+
+            select.innerHTML =
+                '<option value="">Semua User PIC</option>' +
+                picList.map(nama =>
+                    `<option value="${escapeHtmlOps(nama)}">${escapeHtmlOps(nama)}</option>`
+                ).join('');
+
+            if (nilaiLama && picList.includes(nilaiLama)) {
+                select.value = nilaiLama;
+            } else {
+                opsPICTerpilih = '';
+                select.value = '';
+            }
+        }
+
+        function filterOpsByPIC(namaPIC) {
+            opsPICTerpilih = namaPIC || '';
+
+            const dataTampil = opsPICTerpilih
+                ? cacheOperasional.filter(d => (d.nama_user || '').trim() === opsPICTerpilih)
+                : cacheOperasional;
+
+            renderTabelOpsDanSaldo(dataTampil);
+
+            const info = document.getElementById('ops-filter-info');
+            if (info) {
+                info.innerText = opsPICTerpilih
+                    ? `Filter aktif: ${opsPICTerpilih}`
+                    : 'Menampilkan semua User PIC';
+            }
+        }
+
+        function renderTabelOpsDanSaldo(dataTampil) {
+            const tbody = document.getElementById('tbody-ops');
+            const boxSaldo = document.getElementById('ops-sisa-saldo');
+            if (!tbody || !boxSaldo) return;
+
+            const isAdmin = profileData.role === 'admin';
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+
+            tbody.innerHTML = (dataTampil || []).map(d => {
+                const uang = Number(d.jumlah || 0);
+                const qty = Number(d.qty || 1);
+
+                if (d.tipe === 'Masuk') {
+                    totalMasuk += uang;
+                } else {
+                    totalKeluar += uang * qty;
+                }
+
+                return `
+                    <tr class="hover:bg-slate-50">
+                        ${isAdmin ? `<td class="px-3 py-2.5 text-center"><input type="checkbox" value="${d.id}" class="cb-ops"></td>` : ''}
+                        <td class="px-3 py-2.5">${d.tanggal}</td>
+                        <td class="px-3 py-2.5 font-bold ${d.tipe === 'Masuk' ? 'text-green-600' : 'text-red-600'}">${d.tipe.toUpperCase()}</td>
+                        <td class="px-3 py-2.5 text-slate-600 font-medium">${d.nama_user || '-'}</td>
+                        <td class="px-3 py-2.5">${d.lokasi || '-'}</td>
+                        <td class="px-3 py-2.5 text-slate-500">${d.deskripsi_item || '-'}</td>
+                        <td class="px-3 py-2.5 font-medium">${qty}</td>
+                        <td class="px-3 py-2.5 font-semibold text-slate-900">Rp ${uang.toLocaleString('id-ID')}</td>
+                        ${cetakTombolAksiAdmin('operasional', d.id)}
+                    </tr>
+                `;
+            }).join('');
+
+            // SALDO MENGIKUTI FILTER USER PIC:
+            // Sisa = total dana masuk PIC - total pengeluaran PIC.
+            const sisa = totalMasuk - totalKeluar;
+            boxSaldo.innerText = `Rp ${sisa.toLocaleString('id-ID')}`;
+
+            boxSaldo.classList.toggle('text-red-600', sisa < 0);
+            boxSaldo.classList.toggle('text-slate-900', sisa >= 0);
+        }
+
         async function muatTabelOpsDanSisa() {
             try {
                 const tbody = document.getElementById('tbody-ops');
-                if(!tbody) return;
+                if (!tbody) return;
 
                 const isAdmin = profileData.role === 'admin';
-                let query = supabase.from('operasional').select('*').order('tanggal', { ascending: false });
+                let query = supabase
+                    .from('operasional')
+                    .select('*')
+                    .order('tanggal', { ascending: false });
+
+                // User biasa hanya melihat transaksi miliknya.
+                // Admin dapat melihat seluruh PIC.
                 if (!isAdmin) query = query.eq('user_id', currentUser.id);
 
                 const { data, error } = await query;
                 if (error) throw error;
+
                 cacheOperasional = data || [];
 
-                let totalMasuk = 0, totalKeluar = 0;
-                tbody.innerHTML = cacheOperasional.map(d => {
-                    const uang = Number(d.jumlah || 0);
-                    const qty = Number(d.qty || 1);
-                    if (d.tipe === 'Masuk') totalMasuk += uang;
-                    else totalKeluar += (uang * qty);
+                // Isi dropdown berdasarkan User PIC yang tersedia.
+                isiFilterOpsPIC(cacheOperasional);
 
-                    return `
-                        <tr class="hover:bg-slate-50">
-                            ${isAdmin ? `<td class="px-3 py-2.5 text-center"><input type="checkbox" value="${d.id}" class="cb-ops"></td>` : ''}
-                            <td class="px-3 py-2.5">${d.tanggal}</td>
-                            <td class="px-3 py-2.5 font-bold ${d.tipe === 'Masuk' ? 'text-green-600' : 'text-red-600'}">${d.tipe.toUpperCase()}</td>
-                            <td class="px-3 py-2.5 text-slate-600 font-medium">${d.nama_user || '-'}</td>
-                            <td class="px-3 py-2.5">${d.lokasi || '-'}</td>
-                            <td class="px-3 py-2.5 text-slate-500">${d.deskripsi_item || '-'}</td>
-                            <td class="px-3 py-2.5 font-medium">${qty}</td>
-                            <td class="px-3 py-2.5 font-semibold text-slate-900">Rp ${uang.toLocaleString('id-ID')}</td>
-                            ${cetakTombolAksiAdmin('operasional', d.id)}
-                        </tr>
-                    `;
-                }).join('');
+                // Render awal; jika sebelumnya ada filter dan PIC masih tersedia,
+                // filter tersebut tetap dipakai.
+                filterOpsByPIC(opsPICTerpilih);
 
-                const sisa = totalMasuk - totalKeluar;
-                const boxSaldo = document.getElementById('ops-sisa-saldo');
-                if (boxSaldo) boxSaldo.innerText = `Rp ${sisa.toLocaleString('id-ID')}`;
-            } catch (err) { console.error(err.message); }
+            } catch (err) {
+                console.error(err.message);
+            }
         }
 
         async function simpanKasbonMandiri(e) {
