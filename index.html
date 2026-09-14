@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap');
         
@@ -518,9 +518,74 @@
             cacheMaterialNodeB = [], cacheProgresNodeB = [], cacheTollBensin = [],
             cacheMaintenance = [], cacheFakturPajak = [], cacheDataLaporanMatriks = [];
 
+        // ======================================
+        // FORMAT NOMINAL RUPIAH SAAT MENGETIK
+        // ======================================
+        function parseRupiah(value) {
+            if (value === null || value === undefined) return 0;
+            const digits = String(value).replace(/\D/g, '');
+            return digits ? Number(digits) : 0;
+        }
+
+        function formatRupiah(value) {
+            const digits = String(value ?? '').replace(/\D/g, '');
+            if (!digits) return '';
+            return Number(digits).toLocaleString('id-ID');
+        }
+
+        function tandaiInputRupiah(input) {
+            if (!input || input.dataset.currency !== 'true') return;
+            if (input.type !== 'text') input.type = 'text';
+            input.setAttribute('inputmode', 'numeric');
+            input.setAttribute('autocomplete', 'off');
+            input.classList.add('currency-input');
+            if (input.value) input.value = formatRupiah(input.value);
+        }
+
+        function aktifkanFormatRupiah(container = document) {
+            // Input yang sudah ditandai secara eksplisit.
+            container.querySelectorAll('input[data-currency="true"]').forEach(tandaiInputRupiah);
+
+            // Fallback: setiap input yang berada di field dengan label berisi "Rp".
+            container.querySelectorAll('label').forEach(label => {
+                if (!/\bRp\b/i.test(label.textContent || '')) return;
+                const wrapper = label.parentElement;
+                if (!wrapper) return;
+                wrapper.querySelectorAll('input').forEach(input => {
+                    input.dataset.currency = 'true';
+                    tandaiInputRupiah(input);
+                });
+            });
+        }
+
+        function handleInputRupiah(e) {
+            const input = e.target.closest('input[data-currency="true"]');
+            if (!input) return;
+            const start = input.selectionStart ?? input.value.length;
+            const beforeDigits = input.value.slice(0, start).replace(/\D/g, '').length;
+            input.value = formatRupiah(input.value);
+
+            // Usahakan posisi kursor tetap dekat posisi sebelumnya.
+            let pos = 0, digitCount = 0;
+            while (pos < input.value.length && digitCount < beforeDigits) {
+                if (/\d/.test(input.value[pos])) digitCount++;
+                pos++;
+            }
+            try { input.setSelectionRange(pos, pos); } catch (_) {}
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             setupEventListeners();
+            aktifkanFormatRupiah(document);
+            document.addEventListener('input', handleInputRupiah);
+            document.addEventListener('paste', (e) => {
+                const input = e.target.closest('input[data-currency="true"]');
+                if (!input) return;
+                setTimeout(() => handleInputRupiah({ target: input }), 0);
+            });
+            const rupiahObserver = new MutationObserver(() => aktifkanFormatRupiah(document));
+            rupiahObserver.observe(document.body, { childList: true, subtree: true });
             periksaParameterResetPassword();
             periksaSesiLogin();
         });
@@ -936,7 +1001,7 @@
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Lokasi Penerimaan</label><input type="text" id="in-ops-lokasi" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Contoh: Drop Kantor"></div>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal Terima</label><input type="date" id="in-ops-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Jumlah Uang (Rp)</label><input type="number" id="in-ops-jumlah" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                    <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Jumlah Uang (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="in-ops-jumlah" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
                                 </div>
                                 <button type="submit" class="w-full bg-green-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-green-700 transition active:scale-95">Simpan Kas Masuk</button>
                             </form>
@@ -952,7 +1017,7 @@
                                     <div class="col-span-3"><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Deskripsi Item</label><input type="text" id="out-ops-list" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Beli material"></div>
                                     <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Qty</label><input type="number" id="out-ops-qty" value="1" min="1" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
                                 </div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Biaya Keluar (Rp)</label><input type="number" id="out-ops-jumlah" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Biaya Keluar (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="out-ops-jumlah" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
                                 <button type="submit" class="w-full bg-red-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-red-700 transition active:scale-95">Log Pengeluaran</button>
                             </form>
                         </div>
@@ -1003,7 +1068,7 @@
                             <form id="form-pencatatan-kasbon" class="space-y-3">
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Pilih Anggota</label><select id="bon-user-id" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></select></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal</label><input type="date" id="bon-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nominal (Rp)</label><input type="number" id="bon-jumlah" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nominal (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="bon-jumlah" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan</label><input type="text" id="bon-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Kasbon lapangan"></div>
                                 <button type="submit" class="w-full bg-red-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-red-700 transition active:scale-95">Simpan Log Kasbon</button>
                             </form>
@@ -1154,7 +1219,7 @@
                                         <option value="Bensin">Bensin / BBM</option><option value="Toll">Biaya Toll</option>
                                     </select>
                                 </div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nominal (Rp)</label><input type="number" id="toll-nominal" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nominal (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="toll-nominal" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan / Site ID</label><input type="text" id="toll-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Perjalanan ke site JKT01"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Struk</label><input type="file" id="toll-foto" accept="image/*" capture="environment" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
                                 <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Struk</button>
@@ -1200,7 +1265,7 @@
                                     <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal</label><input type="date" id="maint-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
                                     <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Kilometer (KM)</label><input type="number" id="maint-km" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="0"></div>
                                 </div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Biaya (Rp)</label><input type="number" id="maint-biaya" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="0"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Biaya (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="maint-biaya" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="0"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Perbaikan</label><textarea id="maint-ket" required class="w-full px-3 py-2 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Ganti Oli & Kampas Rem"></textarea></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Servis</label><input type="file" id="maint-foto" accept="image/*" capture="environment" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
                                 <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Data</button>
@@ -1243,7 +1308,7 @@
                             <form id="form-faktur-pajak" class="space-y-3">
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nomor Faktur / No Polisi</label><input type="text" id="pajak-nomor" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Contoh: B 1234 ABC"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal Bayar</label><input type="date" id="pajak-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Total Nilai Pajak (Rp)</label><input type="number" id="pajak-biaya" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="0"></div>
+                                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Total Nilai Pajak (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="pajak-biaya" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="0"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Kendaraan</label><input type="text" id="pajak-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500" placeholder="Pajak Tahunan Mobil Avanza"></div>
                                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Upload Bukti Foto Faktur</label><input type="file" id="pajak-foto" accept="image/*" capture="environment" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"></div>
                                 <button type="submit" class="w-full bg-blue-600 text-white text-xs font-medium py-2.5 rounded-xl hover:bg-blue-700 transition active:scale-95">Simpan Faktur Pajak</button>
@@ -1316,7 +1381,7 @@
                                 <h3 class="font-black text-sm text-slate-900 uppercase tracking-wider">Matriks Finansial Akhir</h3>
                                 <p class="text-xs text-slate-500 mt-0.5">Generate otomatis matriks rekapitulasi finansial secara instan.</p>
                             </div>
-                            <button onclick="alert('Fungsi download rekap sedang disiapkan.')" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-95">
+                            <button id="btn-download-rekap" onclick="unduhLaporanMatriks()" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-95">
                                 <i class="fa-solid fa-cloud-arrow-down"></i> Download Rekap Bulanan (.xlsx)
                             </button>
                         </div>
@@ -1396,12 +1461,12 @@
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Lokasi</label><input type="text" id="field-lokasi" value="${data.lokasi || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Deskripsi Item</label><input type="text" id="field-deskripsi_item" value="${data.deskripsi_item || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Qty</label><input type="number" id="field-qty" value="${data.qty || 1}" class="w-full p-2 border rounded-xl text-xs"></div>
-                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Jumlah Nominal (Rp)</label><input type="number" id="field-jumlah" value="${data.jumlah || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Jumlah Nominal (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="field-jumlah" value="${data.jumlah || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
                     `;
                 } else if (namaTabel === 'kasbon') {
                     htmlFields = `
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
-                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Nominal Kasbon (Rp)</label><input type="number" id="field-nominal" value="${data.nominal || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Nominal Kasbon (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="field-nominal" value="${data.nominal || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
                     `;
                 } else if (namaTabel === 'material_node_b') {
@@ -1426,7 +1491,7 @@
                     htmlFields = `
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Kategori</label><select id="field-kategori" class="w-full p-2 border rounded-xl text-xs"><option value="Bensin" ${data.kategori==='Bensin'?'selected':''}>Bensin</option><option value="Toll" ${data.kategori==='Toll'?'selected':''}>Toll</option></select></div>
-                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Nominal (Rp)</label><input type="number" id="field-nominal" value="${data.nominal || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Nominal (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="field-nominal" value="${data.nominal || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
                     `;
                 } else if (namaTabel === 'maintenance_kendaraan') {
@@ -1434,19 +1499,20 @@
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Jenis Kendaraan</label><input type="text" id="field-jenis_kendaraan" value="${data.jenis_kendaraan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Kilometer</label><input type="number" id="field-kilometer" value="${data.kilometer || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
-                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Biaya (Rp)</label><input type="number" id="field-biaya" value="${data.biaya || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Biaya (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="field-biaya" value="${data.biaya || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
                     `;
                 } else if (namaTabel === 'faktur_pajak') {
                     htmlFields = `
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">No Faktur / Plat</label><input type="text" id="field-nomor_faktur" value="${data.nomor_faktur || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Tanggal</label><input type="date" id="field-tanggal" value="${data.tanggal}" class="w-full p-2 border rounded-xl text-xs"></div>
-                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Biaya (Rp)</label><input type="number" id="field-biaya" value="${data.biaya || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
+                        <div><label class="block text-xs text-slate-500 font-semibold mb-1">Biaya (Rp)</label><input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="field-biaya" value="${data.biaya || 0}" class="w-full p-2 border rounded-xl text-xs"></div>
                         <div><label class="block text-xs text-slate-500 font-semibold mb-1">Keterangan</label><input type="text" id="field-keterangan" value="${data.keterangan || ''}" class="w-full p-2 border rounded-xl text-xs"></div>
                     `;
                 }
 
                 fieldsContainer.innerHTML = htmlFields;
+                aktifkanFormatRupiah(fieldsContainer);
                 document.getElementById('modal-edit-universal').classList.remove('hidden');
             } catch (err) { alert("Gagal mengambil data untuk edit: " + err.message); }
         }
@@ -1467,7 +1533,8 @@
             inputs.forEach(input => {
                 const key = input.id.replace('field-', '');
                 let value = input.value;
-                if (input.type === 'number') value = Number(value);
+                if (input.dataset.currency === 'true') value = parseRupiah(value);
+                else if (input.type === 'number') value = Number(value);
                 if (value === '') value = null;
                 payload[key] = value;
             });
@@ -1509,16 +1576,16 @@
                             </select>
                         </td>
                         <td class="px-3 py-3">
-                            <input type="number" id="ctrl-salary-${u.id}" value="${u.salary_per_hari || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
+                            <input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="ctrl-salary-${u.id}" value="${u.salary_per_hari || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
                         </td>
                         <td class="px-3 py-3">
-                            <input type="number" id="ctrl-insentif-${u.id}" value="${u.insentif || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
+                            <input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="ctrl-insentif-${u.id}" value="${u.insentif || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
                         </td>
                         <td class="px-3 py-3">
-                            <input type="number" id="ctrl-cicilan-${u.id}" value="${u.cicilan_per_bulan || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
+                            <input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="ctrl-cicilan-${u.id}" value="${u.cicilan_per_bulan || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
                         </td>
                         <td class="px-3 py-3">
-                            <input type="number" id="ctrl-pinjaman-${u.id}" value="${u.sisa_pinjaman || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
+                            <input type="text" inputmode="numeric" autocomplete="off" data-currency="true" id="ctrl-pinjaman-${u.id}" value="${u.sisa_pinjaman || 0}" class="w-24 px-2 py-1 border border-slate-200 rounded-lg text-xs bg-slate-50 text-slate-900 font-medium focus:outline-none focus:border-blue-500">
                         </td>
                         <td class="px-3 py-3 text-center">
                             <button onclick="simpanFinansialUser('${u.id}')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg transition duration-150 shadow-sm active:scale-95">
@@ -1549,10 +1616,10 @@
 
         async function simpanFinansialUser(userId) {
             try {
-                const salary = Number(document.getElementById(`ctrl-salary-${userId}`).value);
-                const insentif = Number(document.getElementById(`ctrl-insentif-${userId}`).value);
-                const cicilan = Number(document.getElementById(`ctrl-cicilan-${userId}`).value);
-                const pinjaman = Number(document.getElementById(`ctrl-pinjaman-${userId}`).value);
+                const salary = parseRupiah(document.getElementById(`ctrl-salary-${userId}`).value);
+                const insentif = parseRupiah(document.getElementById(`ctrl-insentif-${userId}`).value);
+                const cicilan = parseRupiah(document.getElementById(`ctrl-cicilan-${userId}`).value);
+                const pinjaman = parseRupiah(document.getElementById(`ctrl-pinjaman-${userId}`).value);
 
                 const { error } = await supabase.from('profiles').update({
                     salary_per_hari: salary,
@@ -1680,7 +1747,7 @@
             form.innerHTML = `
                 ${opsiUser}
                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tanggal ${isAdmin ? 'Absensi' : 'Hari Ini'}</label><input type="date" id="absen-tgl" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs focus:outline-none focus:border-blue-500"></div>
-                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Line Progres / Lokasi</label><select id="absen-line" onchange="toggleInputManualLokasi(this.value)" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs"><option value="Node-B">Node-B</option><option value="Node-A">Node-A</option><option value="MANUAL">Tulis Lokasi Manual</option></select></div>
+                <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Line Progres / Lokasi</label><select id="absen-line" onchange="toggleInputManualLokasi(this.value)" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs"><option value="Node-B">Node-B</option><option value="Xenith">Xenith</option><option value="Revitalisasi">Revitalisasi</option><option value="Omnia">Omnia</option><option value="MTN">MTN</option><option value="Other">Other</option><option value="MANUAL">Tulis Lokasi Manual</option></select></div>
                 <div id="container-lokasi-manual" class="hidden"><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Tulis Lokasi Manual</label><input type="text" id="absen-lokasi-manual" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs" placeholder="Ketik nama lokasi/site di sini..."></div>
                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Status Kehadiran</label><select id="absen-status" class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs"><option value="Hadir">Hadir Kerja</option><option value="Absen">Absen / Izin</option></select></div>
                 <div><label class="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Keterangan Aktivitas</label><input type="text" id="absen-ket" required class="w-full px-3 py-2.5 border rounded-xl bg-slate-50 text-xs" placeholder="Preventif site BDG01"></div>
@@ -1806,7 +1873,7 @@
                     tipe: 'Masuk',
                     lokasi: document.getElementById('in-ops-lokasi').value,
                     tanggal: document.getElementById('in-ops-tgl').value,
-                    jumlah: Number(document.getElementById('in-ops-jumlah').value),
+                    jumlah: parseRupiah(document.getElementById('in-ops-jumlah').value),
                     qty: 1,
                     deskripsi_item: 'Penerimaan Dana OPS'
                 };
@@ -1828,7 +1895,7 @@
                     tanggal: document.getElementById('out-ops-tgl').value,
                     deskripsi_item: document.getElementById('out-ops-list').value,
                     qty: Number(document.getElementById('out-ops-qty').value),
-                    jumlah: Number(document.getElementById('out-ops-jumlah').value)
+                    jumlah: parseRupiah(document.getElementById('out-ops-jumlah').value)
                 };
                 const { error } = await supabase.from('operasional').insert([payload]);
                 if (error) throw error;
@@ -1972,7 +2039,7 @@
             try {
                 const uidTarget = document.getElementById('bon-user-id').value;
                 const tgl = document.getElementById('bon-tgl').value;
-                const nominal = Number(document.getElementById('bon-jumlah').value);
+                const nominal = parseRupiah(document.getElementById('bon-jumlah').value);
                 const ket = document.getElementById('bon-ket').value;
 
                 const { data: memberProfil } = await supabase.from('profiles').select('nama').eq('id', uidTarget).single();
@@ -2134,7 +2201,7 @@
                     nama_user: profileData.nama,
                     tanggal: document.getElementById('toll-tgl').value,
                     kategori: document.getElementById('toll-kat').value,
-                    nominal: Number(document.getElementById('toll-nominal').value),
+                    nominal: parseRupiah(document.getElementById('toll-nominal').value),
                     keterangan: document.getElementById('toll-ket').value,
                     foto_struk: stringFoto64 
                 };
@@ -2190,7 +2257,7 @@
                     jenis_kendaraan: document.getElementById('maint-jenis').value,
                     tanggal: document.getElementById('maint-tgl').value,
                     kilometer: Number(document.getElementById('maint-km').value),
-                    biaya: Number(document.getElementById('maint-biaya').value),
+                    biaya: parseRupiah(document.getElementById('maint-biaya').value),
                     foto_struk: stringFoto64,
                     keterangan: document.getElementById('maint-ket').value
                 };
@@ -2251,7 +2318,7 @@
                     pic_pengisi: profileData.nama,
                     nomor_faktur: document.getElementById('pajak-nomor').value,
                     tanggal: document.getElementById('pajak-tgl').value,
-                    biaya: Number(document.getElementById('pajak-biaya').value),
+                    biaya: parseRupiah(document.getElementById('pajak-biaya').value),
                     keterangan: document.getElementById('pajak-ket').value,
                     foto_struk: stringFoto64
                 };
@@ -2344,12 +2411,191 @@
             } catch (err) { console.error(err.message); }
         }
 
-        function unduhExcelSpesifik(namaBerkas, dataSorce) {
-            if(!dataSorce || dataSorce.length === 0) { alert("Tidak ada data untuk diexport."); return; }
-            const worksheet = XLSX.utils.json_to_sheet(dataSorce);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Data_Lapangan");
-            XLSX.writeFile(workbook, `Laporan_${namaBerkas}_Field.xlsx`);
+        // ======================================
+        // DOWNLOAD EXCEL - TAMPILAN STYLED
+        // ======================================
+        function buatNamaFileExcel(namaBerkas) {
+            const sekarang = new Date();
+            const tanggal = sekarang.toISOString().slice(0, 10);
+            return `Laporan_${String(namaBerkas).replace(/[^a-zA-Z0-9_-]/g, '_')}_${tanggal}.xlsx`;
+        }
+
+        function styleWorkbookSheet(ws, opts = {}) {
+            const range = XLSX.utils.decode_range(ws['!ref'] || 'A1:A1');
+            const headerRow = opts.headerRow || 0;
+            const currencyCols = opts.currencyCols || [];
+            const specialBlueCol = opts.specialBlueCol;
+
+            for (let c = range.s.c; c <= range.e.c; c++) {
+                const cell = ws[XLSX.utils.encode_cell({ r: headerRow, c })];
+                if (cell) {
+                    cell.s = {
+                        fill: { fgColor: { rgb: '1E293B' } },
+                        font: { name: 'Arial', sz: 11, bold: true, color: { rgb: 'FFFFFF' } },
+                        alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+                        border: {
+                            top: { style: 'thin', color: { rgb: 'CBD5E1' } },
+                            bottom: { style: 'thin', color: { rgb: 'CBD5E1' } },
+                            left: { style: 'thin', color: { rgb: 'CBD5E1' } },
+                            right: { style: 'thin', color: { rgb: 'CBD5E1' } }
+                        }
+                    };
+                }
+            }
+
+            for (let r = headerRow + 1; r <= range.e.r; r++) {
+                for (let c = range.s.c; c <= range.e.c; c++) {
+                    const addr = XLSX.utils.encode_cell({ r, c });
+                    const cell = ws[addr];
+                    if (!cell) continue;
+                    const base = {
+                        font: { name: 'Arial', sz: 10, color: { rgb: '334155' } },
+                        alignment: { vertical: 'center' },
+                        border: {
+                            top: { style: 'thin', color: { rgb: 'E2E8F0' } },
+                            bottom: { style: 'thin', color: { rgb: 'E2E8F0' } },
+                            left: { style: 'thin', color: { rgb: 'E2E8F0' } },
+                            right: { style: 'thin', color: { rgb: 'E2E8F0' } }
+                        }
+                    };
+                    if ((r - headerRow) % 2 === 0) base.fill = { fgColor: { rgb: 'F8FAFC' } };
+                    if (currencyCols.includes(c)) {
+                        base.alignment = { horizontal: 'right', vertical: 'center' };
+                        if (cell.t === 'n') cell.z = '"Rp" #,##0';
+                    }
+                    if (specialBlueCol === c) {
+                        base.fill = { fgColor: { rgb: 'DBEAFE' } };
+                        base.font = { name: 'Arial', sz: 10, bold: true, color: { rgb: '1D4ED8' } };
+                    }
+                    cell.s = base;
+                }
+            }
+
+            ws['!cols'] = opts.cols || [];
+            ws['!rows'] = [{ hpt: 24 }];
+            ws['!freeze'] = { xSplit: 0, ySplit: headerRow + 1 };
+            ws['!autofilter'] = { ref: XLSX.utils.encode_range(range) };
+        }
+
+        async function simpanFileExcel(workbook, namaFile) {
+            if (typeof XLSX === 'undefined') throw new Error('Library Excel belum berhasil dimuat. Silakan refresh halaman.');
+            const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array', cellStyles: true });
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = namaFile;
+            anchor.style.display = 'none';
+            document.body.appendChild(anchor);
+            anchor.click();
+            setTimeout(() => { try { URL.revokeObjectURL(url); anchor.remove(); } catch(e) {} }, 5000);
+        }
+
+        async function unduhExcelSpesifik(namaBerkas, dataSorce) {
+            if (!Array.isArray(dataSorce) || dataSorce.length === 0) {
+                alert('Tidak ada data untuk diexport.');
+                return;
+            }
+            try {
+                if (typeof XLSX === 'undefined') throw new Error('Library Excel belum dimuat.');
+                const rows = dataSorce.map(item => {
+                    const out = {};
+                    Object.keys(item).forEach(k => {
+                        let v = item[k];
+                        if (v === null || v === undefined) v = '';
+                        out[k] = v;
+                    });
+                    return out;
+                });
+                const ws = XLSX.utils.json_to_sheet(rows);
+                const range = XLSX.utils.decode_range(ws['!ref']);
+                const currencyCols = [];
+                for (let c = range.s.c; c <= range.e.c; c++) {
+                    const header = String(ws[XLSX.utils.encode_cell({r:0,c})]?.v || '').toLowerCase();
+                    if (/nominal|jumlah|biaya|harga|salary|insentif|cicilan|saldo|total|kasbon|sisa/.test(header)) currencyCols.push(c);
+                }
+                const cols = [];
+                for (let c = range.s.c; c <= range.e.c; c++) {
+                    let max = 12;
+                    for (let r = range.s.r; r <= Math.min(range.e.r, 80); r++) {
+                        const v = ws[XLSX.utils.encode_cell({r,c})]?.v;
+                        max = Math.max(max, String(v ?? '').length + 2);
+                    }
+                    cols.push({ wch: Math.min(Math.max(max, 12), 34) });
+                }
+                styleWorkbookSheet(ws, { headerRow: 0, currencyCols, cols });
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Data_Lapangan');
+                await simpanFileExcel(wb, buatNamaFileExcel(namaBerkas));
+            } catch (err) {
+                console.error('Export Excel:', err);
+                alert('Gagal membuat file Excel: ' + err.message);
+            }
+        }
+
+        async function unduhLaporanMatriks() {
+            const tombol = document.getElementById('btn-download-rekap');
+            try {
+                if (typeof XLSX === 'undefined') throw new Error('Library Excel belum dimuat.');
+                const tbody = document.getElementById('tbody-laporan-matriks');
+                if (!tbody || !tbody.querySelector('tr')) {
+                    alert('Belum ada data rekap untuk didownload.');
+                    return;
+                }
+                if (tombol) {
+                    tombol.disabled = true;
+                    tombol.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyiapkan Excel...';
+                }
+
+                // Bangun ulang data agar hasil Excel sama dengan matriks yang tampil di aplikasi.
+                const headers = ['Nama Anggota','Absen','Salary/Hari','Insentif','Total Salary','Total Pinjaman','Kasbon Berjalan','Cicilan','Sisa Pinjaman','Salary Akhir'];
+                const rows = [headers];
+                [...tbody.querySelectorAll('tr')].forEach(tr => {
+                    const cells = [...tr.querySelectorAll('td')].map(td => td.textContent.trim());
+                    if (cells.length) rows.push(cells);
+                });
+
+                const ws = XLSX.utils.aoa_to_sheet(rows);
+                // Ubah kolom Rupiah dari teks "Rp 1.000.000" menjadi angka Excel agar rapi dan bisa dihitung.
+                for (let r = 1; r < rows.length; r++) {
+                    for (let c = 2; c < 10; c++) {
+                        const addr = XLSX.utils.encode_cell({r,c});
+                        const raw = String(ws[addr]?.v || '').replace(/[^0-9-]/g, '');
+                        ws[addr] = { t: 'n', v: raw ? Number(raw) : 0, z: '"Rp" #,##0' };
+                    }
+                }
+
+                const widths = [26,12,18,18,18,20,20,16,20,18].map(w => ({wch:w}));
+                styleWorkbookSheet(ws, {
+                    headerRow: 0,
+                    currencyCols: [2,3,4,5,6,7,8,9],
+                    specialBlueCol: 9,
+                    cols: widths
+                });
+                // Warna khusus seperti tampilan aplikasi untuk kolom finansial.
+                for (let r = 1; r < rows.length; r++) {
+                    const salary = ws[XLSX.utils.encode_cell({r,c:4})];
+                    const kasbon = ws[XLSX.utils.encode_cell({r,c:6})];
+                    const cicilan = ws[XLSX.utils.encode_cell({r,c:7})];
+                    const sisa = ws[XLSX.utils.encode_cell({r,c:8})];
+                    if (salary) salary.s.font = { name:'Arial', sz:10, bold:true, color:{rgb:'059669'} };
+                    if (kasbon) kasbon.s.font = { name:'Arial', sz:10, color:{rgb:'EF4444'} };
+                    if (cicilan) cicilan.s.font = { name:'Arial', sz:10, color:{rgb:'D97706'} };
+                    if (sisa) sisa.s.font = { name:'Arial', sz:10, color:{rgb:'64748B'} };
+                }
+
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Rekap_Bulanan');
+                await simpanFileExcel(wb, buatNamaFileExcel('Rekap_Bulanan'));
+            } catch (err) {
+                console.error('Download rekap:', err);
+                alert('Gagal mendownload rekap Excel: ' + err.message);
+            } finally {
+                if (tombol) {
+                    tombol.disabled = false;
+                    tombol.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Download Rekap Bulanan (.xlsx)';
+                }
+            }
         }
     </script>
 </body>
