@@ -666,15 +666,18 @@
             const nav = document.getElementById('mobile-bottom-nav');
             if (!nav || !profileData) return;
             const userMenus = baseMenus.filter(m => m.role === 'all' || m.role === profileData.role);
+            // Di HP, tombol Keluar dibuat selalu terlihat agar pengguna tidak perlu
+            // membuka sidebar hanya untuk logout. Menu lain tetap tersedia di sidebar.
             const preferred = ['dashboard','absensi','ops','progres_node_b'];
             let items = preferred.map(id => userMenus.find(m => m.id === id)).filter(Boolean);
-            const other = userMenus.find(m => !items.some(x => x.id === m.id));
-            if (other) items.push(other);
-            items = items.slice(0,5);
+            items = items.slice(0,4);
             nav.innerHTML = items.map(m => `
                 <button type="button" id="mobile-nav-${m.id}" onclick="pindahMenu('${m.id}')">
                     <i class="fa-solid ${m.icon}"></i><span>${m.name.replace(' Team','').replace(' Node-B','')}</span>
-                </button>`).join('');
+                </button>`).join('') + `
+                <button type="button" id="mobile-nav-logout" onclick="handleLogout()" class="mobile-logout-btn" aria-label="Keluar Sistem">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i><span>Keluar</span>
+                </button>`;
             updateMobileBottomNav();
         }
 
